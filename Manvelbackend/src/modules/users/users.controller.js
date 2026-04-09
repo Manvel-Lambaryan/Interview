@@ -1,3 +1,4 @@
+import { getUserAnalytics } from "../clicks/clicks.service.js";
 import { toShortUrlResponse } from "../urls/urls.presenter.js";
 import * as usersService from "./users.service.js";
 
@@ -23,6 +24,15 @@ export async function listUserUrlsController(req, res, next) {
   try {
     const rows = await usersService.listUserUrls(req.params.id);
     res.status(200).json(rows.map(toShortUrlResponse));
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function getUserAnalyticsController(req, res, next) {
+  try {
+    const analytics = await getUserAnalytics(req.params.id);
+    res.status(200).json(analytics);
   } catch (e) {
     next(e);
   }

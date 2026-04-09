@@ -26,9 +26,34 @@ model ShortURL {
   short_code    String         @unique
   created_at    DateTime       @default(now())
   expires_at    DateTime?
+  clicks        Click[]
   short_url_tags ShortURLTag[]
 
   @@map("short_urls")
+}
+
+enum ClickDevice {
+  mobile
+  desktop
+  tablet
+  unknown
+
+  @@map("click_device")
+}
+
+model Click {
+  id           BigInt       @id @default(autoincrement())
+  short_url_id String
+  short_url    ShortURL     @relation(fields: [short_url_id], references: [id], onDelete: Cascade)
+  clicked_at   DateTime     @default(now())
+  ip_address   String
+  country      String?
+  device       ClickDevice?
+
+  @@index([short_url_id])
+  @@index([clicked_at])
+  @@index([short_url_id, clicked_at])
+  @@map("clicks")
 }
 
 /// Tag label; unique name so one canonical tag per label in the system.

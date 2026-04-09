@@ -6,6 +6,7 @@ import {
   userIdParamsSchema,
 } from "../../validation/users.schema.js";
 import {
+  getUserAnalyticsController,
   listUserUrlsController,
   registerUserController,
 } from "./users.controller.js";
@@ -16,6 +17,11 @@ usersRouter.post(
   "/",
   validateBody(registerUserBodySchema),
   registerUserController,
+);
+usersRouter.get(
+  "/:id/analytics",
+  validateParams(userIdParamsSchema),
+  getUserAnalyticsController,
 );
 usersRouter.get(
   "/:id/urls",
