@@ -6,7 +6,7 @@
 
 ---
 
-## Root (`backend/`)
+## Root (`Manvelbackend/`)
 
 | Path | Նպատակ |
 |------|--------|

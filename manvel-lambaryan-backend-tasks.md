@@ -4,16 +4,16 @@
 
 ---
 
-## Կատարման վիճակ (ստուգված `backend/`-ում, codebase-ի հետ համաձայնեցված)
+## Կատարման վիճակ (ստուգված `Manvelbackend/`-ում, codebase-ի հետ համաձայնեցված)
 
 | Փուլ | Վիճակ | Նշում |
 | --- | --- | --- |
-| **0 — Նախապատրաստում** | ✅ | Node 20+ / Express, `backend/package.json`; `backend/src/config/env.js` (Zod — `DATABASE_URL`, `PORT`, `NODE_ENV`); `backend/.gitignore` (`node_modules`, `.env`, …); PostgreSQL + Prisma (`backend/prisma/`, migrations) |
+| **0 — Նախապատրաստում** | ✅ | Node 20+ / Express, `Manvelbackend/package.json`; `Manvelbackend/src/config/env.js` (Zod — `DATABASE_URL`, `PORT`, `NODE_ENV`); `Manvelbackend/.gitignore` (`node_modules`, `.env`, …); PostgreSQL + Prisma (`Manvelbackend/prisma/`, migrations) |
 | **1.1 — User** | ✅ | `users` աղյուսակ, `email` unique, app-ում email validation (`zod`), migration `20260409134000_init_users` |
 | **1.2 — ShortURL** | ✅ | `short_urls`, FK → `users`, `short_code` unique, user delete → **CASCADE** (տես `schema.prisma` / migration `20260409135349_add_short_urls`) |
 | **1.3 — Tag** | ✅ | `tags`, `name` unique, migration `20260409144158_add_tags` |
 | **1.4 — ShortURL_Tag** | ✅ | `short_url_tags`, composite PK `(short_url_id, tag_id)`, `@@index([tag_id])`, migration `20260409144955_add_short_url_tags` |
-| **2 — Short code** | ✅ | `backend/src/lib/shortCode.js` — `generateShortCode()` (6 նիշ `a-zA-Z0-9`, `crypto.randomInt`), `withUniqueShortCode()` — P2002 `short_code`-ի վրա retry |
+| **2 — Short code** | ✅ | `Manvelbackend/src/lib/shortCode.js` — `generateShortCode()` (6 նիշ `a-zA-Z0-9`, `crypto.randomInt`), `withUniqueShortCode()` — P2002 `short_code`-ի վրա retry |
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
 | **4** | ✅ | `POST /urls`, `GET /urls/:short_code` (302, 404, 410); `user_id` body-ում |
 | **5** | ✅ | `GET /users/:id/urls` — 404 user-ի չլինելիս, 200 JSON զանգված, `id`-ի UUID validation |
@@ -37,7 +37,7 @@
 
 1. ✅ Ընտրիր stack-ը (օր. Node/Express, Nest, Go, Python/FastAPI և այլն) և dependency management-ը։
 2. ✅ Սահմանիր `.env` կառուցվածքը (DB connection, port, secret keys եթե պետք լինեն) — **գաղտնաբառեր չգրել repo-ում**։
-3. ✅ Ավելացրու `.gitignore` (node_modules, .env, build artifacts) եթե դեռ չկա։ (`backend/.gitignore`)
+3. ✅ Ավելացրու `.gitignore` (node_modules, .env, build artifacts) եթե դեռ չկա։ (`Manvelbackend/.gitignore`)
 4. ✅ Պայմանավորվիր DB-ի մասին (PostgreSQL / SQLite dev / այլ) և migration tool-ի հետ (օր. Prisma, Drizzle, Alembic, migrate)։
 
 ---
@@ -104,7 +104,7 @@
 
 ## Փուլ 2 — Short code գեներացիա ✅
 
-1. ✅ Իրականացրու ֆունկցիա, որը գեներացնում է **6 նիշ** (օր. `a-zA-Z0-9`) — `generateShortCode()` (`backend/src/lib/shortCode.js`)։
+1. ✅ Իրականացրու ֆունկցիա, որը գեներացնում է **6 նիշ** (օր. `a-zA-Z0-9`) — `generateShortCode()` (`Manvelbackend/src/lib/shortCode.js`)։
 2. ✅ **Միակության** ապահովում՝ insert-ի ժամանակ collision-ի դեպքում նորից գեներացիա (կամ DB-ում retry loop) մինչև հաջողություն — `withUniqueShortCode(attempt)` (Prisma `P2002` `short_code`-ի վրա → նոր code)։
 3. ✅ Մի վստահի միայն հավանականությամբ՝ production-ում պարտադիր է unique constraint-ի հետ համակցված retry — DB-ում `short_urls.short_code` @unique + retry loop։
 
@@ -210,7 +210,7 @@
 
 ## Փուլ 9 — Վերջնական ստուգում (Definition of Done) ✅
 
-- [x] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ `POST /users`, `GET /users/:id/urls`, `POST/GET/DELETE /urls...`, tag endpoint-ներ, bonus `GET /urls?tag=` — `backend/src/modules/*/`, mount `apiRouter`-ում։
+- [x] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ `POST /users`, `GET /users/:id/urls`, `POST/GET/DELETE /urls...`, tag endpoint-ներ, bonus `GET /urls?tag=` — `Manvelbackend/src/modules/*/`, mount `apiRouter`-ում։
 - [x] `short_code` auto-generated, 6 նիշ, unique։
 - [x] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
 - [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK + **409** `POST .../tags`-ում կրկնակիի համար։

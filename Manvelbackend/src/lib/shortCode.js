@@ -1,6 +1,6 @@
 import { randomInt } from "node:crypto";
 
-/** Length required by product spec (README / backend tasks). */
+/** Length required by product spec (README / manvel-lambaryan-backend-tasks). */
 export const SHORT_CODE_LENGTH = 6;
 
 /** Alphanumeric alphabet: a–z, A–Z, 0–9 (62 symbols). */

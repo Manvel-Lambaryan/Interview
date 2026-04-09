@@ -6,11 +6,11 @@ import { z } from "zod";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const backendEnv = resolve(__dirname, "../../.env");
+const packageEnv = resolve(__dirname, "../../.env");
 const repoRootEnv = resolve(__dirname, "../../../.env");
 
-if (existsSync(backendEnv)) {
-  dotenv.config({ path: backendEnv });
+if (existsSync(packageEnv)) {
+  dotenv.config({ path: packageEnv });
 } else if (existsSync(repoRootEnv)) {
   dotenv.config({ path: repoRootEnv });
 } else {
