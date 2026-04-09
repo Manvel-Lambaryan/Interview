@@ -4,6 +4,24 @@
 
 ---
 
+## Կատարման վիճակ (ստուգված `backend/`-ում)
+
+| Փուլ | Վիճակ | Նշում |
+| --- | --- | --- |
+| **0 — Նախապատրաստում** | ✅ | Node 20+ / Express, `backend/package.json`; `backend/src/config/env.js` (Zod — `DATABASE_URL`, `PORT`, `NODE_ENV`); `backend/.gitignore` (`node_modules`, `.env`, …); PostgreSQL + Prisma (`backend/prisma/`, migrations) |
+| **1.1 — User** | ✅ | `users` աղյուսակ, `email` unique, app-ում email validation (`zod`), migration `20260409134000_init_users` |
+| **1.2 — ShortURL** | ❌ | `schema.prisma`-ում դեռ չկա |
+| **1.3 — Tag** | ❌ | — |
+| **1.4 — ShortURL_Tag** | ❌ | — |
+| **2 — Short code** | ❌ | — |
+| **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
+| **4–8** | ❌ | `urls`/tags route-ներ, redirect, ցուցակ, ջնջում, tag API, bonus — չեն ավելացվել (`backend/src/routes/index.js` միայն `/users`) |
+| **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
+
+**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2–8 ❌
+
+---
+
 ## Կապը մյուս մասի հետ (կարճ)
 
 - `GET /urls/:short_code` redirect-ից **հետո** (կամ նույն request-ի մեջ, համաձայնեցված կերպով) Mane-ի կողմից պետք է արձանագրվի click-ը (`ShortURL`-ի `id`-ով)։ Սա **պայմանավորված** վարք է՝ նախապես համաձայնեցրեք hook-ի տեղը (middleware, event, ուղղակի կանչ)։
@@ -11,18 +29,18 @@
 
 ---
 
-## Փուլ 0 — Նախապատրաստում
+## Փուլ 0 — Նախապատրաստում ✅
 
-1. Ընտրիր stack-ը (օր. Node/Express, Nest, Go, Python/FastAPI և այլն) և dependency management-ը։
-2. Սահմանիր `.env` կառուցվածքը (DB connection, port, secret keys եթե պետք լինեն) — **գաղտնաբառեր չգրել repo-ում**։
-3. Ավելացրու `.gitignore` (node_modules, .env, build artifacts) եթե դեռ չկա։
-4. Պայմանավորվիր DB-ի մասին (PostgreSQL / SQLite dev / այլ) և migration tool-ի հետ (օր. Prisma, Drizzle, Alembic, migrate)։
+1. ✅ Ընտրիր stack-ը (օր. Node/Express, Nest, Go, Python/FastAPI և այլն) և dependency management-ը։
+2. ✅ Սահմանիր `.env` կառուցվածքը (DB connection, port, secret keys եթե պետք լինեն) — **գաղտնաբառեր չգրել repo-ում**։
+3. ✅ Ավելացրու `.gitignore` (node_modules, .env, build artifacts) եթե դեռ չկա։ (`backend/.gitignore`)
+4. ✅ Պայմանավորվիր DB-ի մասին (PostgreSQL / SQLite dev / այլ) և migration tool-ի հետ (օր. Prisma, Drizzle, Alembic, migrate)։
 
 ---
 
 ## Փուլ 1 — Տվյալների մոդել և սխեմա
 
-### 1.1 User
+### 1.1 User ✅
 
 | Դաշտ | Պահանջ |
 | --- | --- |
@@ -33,11 +51,11 @@
 
 **Task-եր.**
 
-1. Սահմանիր `User` աղյուսակը / մոդելը migration-ով։
-2. Ավելացրու `email`-ի unique constraint։
-3. (Կամայական բայց խորհուրդ է տրվում) Email format validation application շերտում։
+1. ✅ Սահմանիր `User` աղյուսակը / մոդելը migration-ով։
+2. ✅ Ավելացրու `email`-ի unique constraint։
+3. ✅ (Կամայական բայց խորհուրդ է տրվում) Email format validation application շերտում։
 
-### 1.2 ShortURL
+### 1.2 ShortURL ❌
 
 | Դաշտ | Պահանջ |
 | --- | --- |
@@ -54,7 +72,7 @@
 2. `short_code`-ի վրա unique index։
 3. Սահմանիր `ON DELETE` քաղաքականությունը `user` ջնջելիս (օր. CASCADE կամ RESTRICT — փաստաթղթագրիր ընտրությունը)։
 
-### 1.3 Tag
+### 1.3 Tag ❌
 
 | Դաշտ | Պահանջ |
 | --- | --- |
@@ -66,7 +84,7 @@
 1. Սահմանիր `Tag` աղյուսակը։
 2. Եթե `name` unique է — unique constraint migration-ով։
 
-### 1.4 ShortURL_Tag (many-to-many)
+### 1.4 ShortURL_Tag (many-to-many) ❌
 
 | Դաշտ | Պահանջ |
 | --- | --- |
@@ -80,7 +98,7 @@
 
 ---
 
-## Փուլ 2 — Short code գեներացիա
+## Փուլ 2 — Short code գեներացիա ❌
 
 1. Իրականացրու ֆունկցիա, որը գեներացնում է **6 նիշ** (օր. `a-zA-Z0-9`)։
 2. **Միակության** ապահովում՝ insert-ի ժամանակ collision-ի դեպքում նորից գեներացիա (կամ DB-ում retry loop) մինչև հաջողություն։
@@ -88,19 +106,19 @@
 
 ---
 
-## Փուլ 3 — API — User
+## Փուլ 3 — API — User ✅
 
 ### `POST /users` — Register a user
 
 **Հերթական task-եր.**
 
-1. Request body-ում ընդունիր `name`, `email` (և չափերի/форматի validation)։
-2. Եթե `email` արդեն գոյություն ունի — վերադարձրու **409 Conflict** (կամ համաձայնեցված այլ կոդ, բայց պետք է consistent լինի)։
-3. Հաջողության դեպքում — **201 Created** և response body-ում user-ի ներկայացում (առնվազն `id`, `name`, `email`, `created_at`)։
+1. ✅ Request body-ում ընդունիր `name`, `email` (և չափերի/форматի validation)։
+2. ✅ Եթե `email` արդեն գոյություն ունի — վերադարձրու **409 Conflict** (կամ համաձայնեցված այլ կոդ, բայց պետք է consistent լինի)։
+3. ✅ Հաջողության դեպքում — **201 Created** և response body-ում user-ի ներկայացում (առնվազն `id`, `name`, `email`, `created_at`)։
 
 ---
 
-## Փուլ 4 — API — Short URL ստեղծում և redirect
+## Փուլ 4 — API — Short URL ստեղծում և redirect ❌
 
 ### `POST /urls` — Create a short URL
 
@@ -130,7 +148,7 @@
 
 ---
 
-## Փուլ 5 — API — User-ի URL-ների ցուցակ
+## Փուլ 5 — API — User-ի URL-ների ցուցակ ❌
 
 ### `GET /users/:id/urls`
 
@@ -142,7 +160,7 @@
 
 ---
 
-## Փուլ 6 — API — Ջնջում
+## Փուլ 6 — API — Ջնջում ❌
 
 ### `DELETE /urls/:short_code`
 
@@ -156,7 +174,7 @@
 
 ---
 
-## Փուլ 7 — API — Tags
+## Փուլ 7 — API — Tags ❌
 
 ### `POST /urls/:short_code/tags` — Attach a tag
 
@@ -177,7 +195,7 @@
 
 ---
 
-## Փուլ 8 — Bonus
+## Փուլ 8 — Bonus ❌
 
 ### `GET /urls?tag=:name`
 
@@ -188,24 +206,24 @@
 
 ## Փուլ 9 — Վերջնական ստուգում (Definition of Done)
 
-- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։
+- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(ներկայումս միայն `POST /users`)*
 - [ ] `short_code` auto-generated, 6 նիշ, unique։
 - [ ] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
 - [ ] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում (DB կամ app validation)։
-- [ ] HTTP կոդերը և validation-ը հստակ են։
+- [x] HTTP կոդերը և validation-ը հստակ են։ *(կիրառված է `POST /users`-ի համար; մնացած endpoint-ներ չկան)*
 - [ ] (Թիմային) Redirect + click գրանցման hook-ը համաձայնեցված է Mane-ի հետ։
 
 ---
 
 ## Հավելված — Endpoint-ների արագ ցուցակ (առաջնահերթություն իրականացման)
 
-1. `POST /users`
-2. `POST /urls` (+ short code generation)
-3. `GET /urls/:short_code` (redirect + 404/410)
-4. `GET /users/:id/urls`
-5. `DELETE /urls/:short_code`
-6. `POST /urls/:short_code/tags`
-7. `GET /urls/:short_code/tags`
-8. (Bonus) `GET /urls?tag=:name`
+1. ✅ `POST /users`
+2. ❌ `POST /urls` (+ short code generation)
+3. ❌ `GET /urls/:short_code` (redirect + 404/410)
+4. ❌ `GET /users/:id/urls`
+5. ❌ `DELETE /urls/:short_code`
+6. ❌ `POST /urls/:short_code/tags`
+7. ❌ `GET /urls/:short_code/tags`
+8. ❌ (Bonus) `GET /urls?tag=:name`
 
 Այս հերթականությամբ կարող ես աստիճանաբար integration test անել՝ յուրաքանչյուր փուլ ավարտելուց հետո։
