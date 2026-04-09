@@ -13,6 +13,7 @@ export async function createShortUrlController(req, res, next) {
 export async function redirectByShortCodeController(req, res, next) {
   try {
     const row = await urlsService.getRedirectTarget(req.params.short_code);
+    // Mane: record click here (short_url_id = row.id), after resolve and before redirect — README "How the Two Parts Connect".
     res.redirect(302, row.original_url);
   } catch (e) {
     next(e);

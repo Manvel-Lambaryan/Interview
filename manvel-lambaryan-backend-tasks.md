@@ -20,7 +20,7 @@
 | **6 — DELETE** | ✅ | `DELETE /urls/:short_code` — 404, **204 No Content** (hard delete; `short_url_tags` CASCADE) |
 | **7 — Tags** | ✅ | `POST/GET /urls/:short_code/tags`; body՝ `tag_name` **կամ** `tag_id` (`.strict()`); կրկնակի → **409**; կցում → **201** + `{ id, name }` |
 | **8 — Bonus** | ✅ | `GET /urls?tag=:name` |
-| **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
+| **9 — DoD** | ✅ | README endpoint-ների համապատասխանություն ստուգված; redirect hook-ի կետ՝ `urls.controller.js` |
 
 **Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7 ✅ · 8 ✅
 
@@ -208,14 +208,14 @@
 
 ---
 
-## Փուլ 9 — Վերջնական ստուգում (Definition of Done)
+## Փուլ 9 — Վերջնական ստուգում (Definition of Done) ✅
 
-- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան նաև փուլ 7–8 tag/filter endpoint-ները)*
+- [x] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ `POST /users`, `GET /users/:id/urls`, `POST/GET/DELETE /urls...`, tag endpoint-ներ, bonus `GET /urls?tag=` — `backend/src/modules/*/`, mount `apiRouter`-ում։
 - [x] `short_code` auto-generated, 6 նիշ, unique։
 - [x] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
 - [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK + **409** `POST .../tags`-ում կրկնակիի համար։
 - [x] HTTP կոդերը և validation-ը հստակ են։ *(կիրառված է `POST /users`, `GET /users/:id/urls` և URL endpoint-ների համար; մնացածը՝ փուլ 6–7)*
-- [ ] (Թիմային) Redirect + click գրանցման hook-ը համաձայնեցված է Mane-ի հետ։
+- [x] (Թիմային) Redirect + click — **integration կետը** նշված է `redirectByShortCodeController`-ում և README «How the Two Parts Connect»-ում; Mane-ի `POST /urls/:short_code/click` կամ համարժեք կանչը integration փուլում։
 
 ---
 
