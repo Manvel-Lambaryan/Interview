@@ -27,7 +27,7 @@
 
 - `Click.short_url_id`-ը հղվում է Manvel-ի `ShortURL.id`-ին։
 - `GET /urls/:short_code` redirect-ի ժամանակ պետք է գրանցվի click-ը Mane-ի մասում։
-- Integration-ի պայմանավորված կետը արդեն նշված է `Manvelbackend/src/modules/urls/urls.controller.js`-ում comment-ով, բայց պետք է դարձնել իրական կանչելի flow։
+- Integration-ի պայմանավորված կետը հիմա արդեն իրական կանչելի flow է `Manvelbackend/src/modules/urls/urls.controller.js`-ում (`recordRedirectClick(...)`)։
 
 ---
 
@@ -56,7 +56,7 @@
 
 **Task-եր.**
 
-1. ✅ Սահմանիր `Click` աղյուսակը migration-ով — `migrations/20260409161000_create_clicks.sql`։
+1. ✅ Սահմանիր `Click` աղյուսակը migration-ով — `Manvelbackend/prisma/migrations/20260409170000_add_clicks/migration.sql`։
 2. ✅ `device`-ի համար ավելացրու enum/սահմանափակ արժեքներ — `click_device` enum և `src/modules/clicks/click.types.ts` (`mobile`, `desktop`, `tablet`, `unknown`)։
 3. ✅ `clicked_at`-ը ավտոմատ set արա DB default-ով — `DEFAULT CURRENT_TIMESTAMP`։
 4. ✅ Ավելացրու index-ներ analytics query-ների համար — `short_url_id`, `clicked_at`, `(short_url_id, clicked_at)`։
