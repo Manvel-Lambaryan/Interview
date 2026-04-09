@@ -1,0 +1,27 @@
+{
+  "name": "url-shortener-backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/main.js",
+    "start": "node src/main.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "test": "echo \"Define test runner in package.json\" && exit 0",
+    "lint": "echo \"Define eslint in package.json\" && exit 0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.6.0"
+  }
+}
