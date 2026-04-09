@@ -15,10 +15,11 @@
 | **1.4 — ShortURL_Tag** | ✅ | `short_url_tags`, composite PK `(short_url_id, tag_id)`, `@@index([tag_id])`, migration `20260409144955_add_short_url_tags` |
 | **2 — Short code** | ✅ | `backend/src/lib/shortCode.js` — `generateShortCode()` (6 նիշ `a-zA-Z0-9`, `crypto.randomInt`), `withUniqueShortCode()` — P2002 `short_code`-ի վրա retry |
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
-| **4–8** | ❌ | `urls`/tags route-ներ, redirect, ցուցակ, ջնջում, tag API, bonus — չեն ավելացվել (`backend/src/routes/index.js` միայն `/users`) |
+| **4** | ✅ | `POST /urls`, `GET /urls/:short_code` (302, 404, 410); `user_id` body-ում |
+| **5–8** | ❌ | user URL ցուցակ, DELETE, tag API, bonus query |
 | **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
 
-**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3–8 ❌
+**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5–8 ❌
 
 ---
 
@@ -118,7 +119,7 @@
 
 ---
 
-## Փուլ 4 — API — Short URL ստեղծում և redirect ❌
+## Փուլ 4 — API — Short URL ստեղծում և redirect ✅
 
 ### `POST /urls` — Create a short URL
 
@@ -206,9 +207,9 @@
 
 ## Փուլ 9 — Վերջնական ստուգում (Definition of Done)
 
-- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(ներկայումս միայն `POST /users`)*
-- [ ] `short_code` auto-generated, 6 նիշ, unique։
-- [ ] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
+- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան `POST /users`, `POST /urls`, `GET /urls/:short_code`; մնացածը՝ փուլ 5–8)*
+- [x] `short_code` auto-generated, 6 նիշ, unique։
+- [x] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
 - [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK; tag-ի կցման HTTP API (փուլ 7) — դեռ չկա։
 - [x] HTTP կոդերը և validation-ը հստակ են։ *(կիրառված է `POST /users`-ի համար; մնացած endpoint-ներ չկան)*
 - [ ] (Թիմային) Redirect + click գրանցման hook-ը համաձայնեցված է Mane-ի հետ։
@@ -218,8 +219,8 @@
 ## Հավելված — Endpoint-ների արագ ցուցակ (առաջնահերթություն իրականացման)
 
 1. ✅ `POST /users`
-2. ❌ `POST /urls` (+ short code generation)
-3. ❌ `GET /urls/:short_code` (redirect + 404/410)
+2. ✅ `POST /urls` (+ short code generation)
+3. ✅ `GET /urls/:short_code` (redirect + 404/410)
 4. ❌ `GET /users/:id/urls`
 5. ❌ `DELETE /urls/:short_code`
 6. ❌ `POST /urls/:short_code/tags`

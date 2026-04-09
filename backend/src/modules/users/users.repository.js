@@ -9,3 +9,12 @@ export async function createUser(data) {
     },
   });
 }
+
+/**
+ * @param {string} id
+ * @returns {Promise<import("@prisma/client").User | null>}
+ */
+export async function findUserById(id) {
+  const prisma = getPrisma();
+  return prisma.user.findUnique({ where: { id } });
+}
