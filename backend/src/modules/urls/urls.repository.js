@@ -30,3 +30,15 @@ export async function findByShortCode(shortCode) {
     where: { short_code: shortCode },
   });
 }
+
+/**
+ * @param {string} userId
+ * @returns {Promise<import("@prisma/client").ShortURL[]>}
+ */
+export async function findManyByUserId(userId) {
+  const prisma = getPrisma();
+  return prisma.shortURL.findMany({
+    where: { user_id: userId },
+    orderBy: { created_at: "desc" },
+  });
+}

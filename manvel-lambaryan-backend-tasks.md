@@ -16,10 +16,11 @@
 | **2 — Short code** | ✅ | `backend/src/lib/shortCode.js` — `generateShortCode()` (6 նիշ `a-zA-Z0-9`, `crypto.randomInt`), `withUniqueShortCode()` — P2002 `short_code`-ի վրա retry |
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
 | **4** | ✅ | `POST /urls`, `GET /urls/:short_code` (302, 404, 410); `user_id` body-ում |
-| **5–8** | ❌ | user URL ցուցակ, DELETE, tag API, bonus query |
+| **5** | ✅ | `GET /users/:id/urls` — 404 user-ի չլինելիս, 200 JSON զանգված, `id`-ի UUID validation |
+| **6–8** | ❌ | DELETE, tag API, bonus query |
 | **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
 
-**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5–8 ❌
+**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6–8 ❌
 
 ---
 
@@ -149,15 +150,15 @@
 
 ---
 
-## Փուլ 5 — API — User-ի URL-ների ցուցակ ❌
+## Փուլ 5 — API — User-ի URL-ների ցուցակ ✅
 
 ### `GET /users/:id/urls`
 
 **Հերթական task-եր.**
 
-1. Եթե `User` `id`-ով չկա — **404**։
-2. Վերադարձրու այդ user-ի բոլոր `ShortURL`-երը (ըստ անհրաժեշտության pagination — bonus, README-ում պարտադիր չէ)։
-3. **200 OK** և զանգված JSON։
+1. ✅ Եթե `User` `id`-ով չկա — **404**։
+2. ✅ Վերադարձրու այդ user-ի բոլոր `ShortURL`-երը (ըստ անհրաժեշտության pagination — bonus, README-ում պարտադիր չէ)։
+3. ✅ **200 OK** և զանգված JSON։
 
 ---
 
@@ -207,11 +208,11 @@
 
 ## Փուլ 9 — Վերջնական ստուգում (Definition of Done)
 
-- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան `POST /users`, `POST /urls`, `GET /urls/:short_code`; մնացածը՝ փուլ 5–8)*
+- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան `POST /users`, `GET /users/:id/urls`, `POST /urls`, `GET /urls/:short_code`; մնացածը՝ փուլ 6–8)*
 - [x] `short_code` auto-generated, 6 նիշ, unique։
 - [x] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
 - [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK; tag-ի կցման HTTP API (փուլ 7) — դեռ չկա։
-- [x] HTTP կոդերը և validation-ը հստակ են։ *(կիրառված է `POST /users`-ի համար; մնացած endpoint-ներ չկան)*
+- [x] HTTP կոդերը և validation-ը հստակ են։ *(կիրառված է `POST /users`, `GET /users/:id/urls` և URL endpoint-ների համար; մնացածը՝ փուլ 6–7)*
 - [ ] (Թիմային) Redirect + click գրանցման hook-ը համաձայնեցված է Mane-ի հետ։
 
 ---
@@ -221,7 +222,7 @@
 1. ✅ `POST /users`
 2. ✅ `POST /urls` (+ short code generation)
 3. ✅ `GET /urls/:short_code` (redirect + 404/410)
-4. ❌ `GET /users/:id/urls`
+4. ✅ `GET /users/:id/urls`
 5. ❌ `DELETE /urls/:short_code`
 6. ❌ `POST /urls/:short_code/tags`
 7. ❌ `GET /urls/:short_code/tags`
