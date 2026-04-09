@@ -8,3 +8,17 @@ export function getPrisma() {
   }
   return prisma;
 }
+
+/**
+ * Test hook: lets unit/integration tests inject a fake Prisma client
+ * without opening a real database connection.
+ *
+ * @param {unknown} client
+ */
+export function setPrisma(client) {
+  prisma = client;
+}
+
+export function resetPrisma() {
+  prisma = undefined;
+}
