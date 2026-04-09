@@ -11,3 +11,13 @@ export function toShortUrlResponse(row) {
     expires_at: row.expires_at ? row.expires_at.toISOString() : null,
   };
 }
+
+/**
+ * @param {import("@prisma/client").Tag} row
+ */
+export function toTagResponse(row) {
+  return {
+    id: row.id,
+    name: row.name,
+  };
+}

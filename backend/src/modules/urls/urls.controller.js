@@ -1,5 +1,5 @@
 import * as urlsService from "./urls.service.js";
-import { toShortUrlResponse } from "./urls.presenter.js";
+import { toShortUrlResponse, toTagResponse } from "./urls.presenter.js";
 
 export async function createShortUrlController(req, res, next) {
   try {
@@ -23,6 +23,27 @@ export async function deleteShortUrlByCodeController(req, res, next) {
   try {
     await urlsService.deleteShortUrlByCode(req.params.short_code);
     res.status(204).send();
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function attachTagToShortUrlController(req, res, next) {
+  try {
+    const tag = await urlsService.attachTagToShortUrl(
+      req.params.short_code,
+      req.body,
+    );
+    res.status(201).json(toTagResponse(tag));
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function listTagsForShortUrlController(req, res, next) {
+  try {
+    const tags = await urlsService.listTagsForShortUrl(req.params.short_code);
+    res.status(200).json(tags.map(toTagResponse));
   } catch (e) {
     next(e);
   }

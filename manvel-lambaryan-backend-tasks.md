@@ -18,10 +18,11 @@
 | **4** | ✅ | `POST /urls`, `GET /urls/:short_code` (302, 404, 410); `user_id` body-ում |
 | **5** | ✅ | `GET /users/:id/urls` — 404 user-ի չլինելիս, 200 JSON զանգված, `id`-ի UUID validation |
 | **6 — DELETE** | ✅ | `DELETE /urls/:short_code` — 404, **204 No Content** (hard delete; `short_url_tags` CASCADE) |
-| **7–8** | ❌ | tag API, bonus query |
+| **7 — Tags** | ✅ | `POST/GET /urls/:short_code/tags`; body՝ `tag_name` **կամ** `tag_id` (`.strict()`); կրկնակի → **409**; կցում → **201** + `{ id, name }` |
+| **8 — Bonus** | ❌ | `GET /urls?tag=:name` |
 | **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
 
-**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7–8 ❌
+**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7 ✅ · 8 ❌
 
 ---
 
@@ -177,24 +178,24 @@
 
 ---
 
-## Փուլ 7 — API — Tags ❌
+## Փուլ 7 — API — Tags ✅
 
 ### `POST /urls/:short_code/tags` — Attach a tag
 
 **Հերթական task-եր.**
 
-1. Եթե `short_code` չկա — **404**։
-2. Request body-ում `tag` որպես `tag_id` կամ `tag_name` — ընտրիր մեկը և փաստաթղթագրիր։
-3. Եթե tag-ը նոր անունով է — ստեղծիր `Tag` (կամ պահանջիր նախ գոյություն ունեցող `tag_id` — ընտրիր մեկ մոտեցում)։
-4. **Կրկնակի tag նույն URL-ին** — README-ի պահանջ՝ չթույլատրել — **409 Conflict** կամ idempotent no-op (**ընտրիր և փաստաթղթագրիր**, evaluation-ում կարևոր է consistent լինել)։
-5. **201** կամ **204** — հետևողականություն։
+1. ✅ Եթե `short_code` չկա — **404**։
+2. ✅ Request body՝ **կամ** `{ "tag_name": string }` **կամ** `{ "tag_id": uuid }` (`z.union` + `.strict()` — երկուսը միասին չեն)։
+3. ✅ `tag_name` — `Tag` find-or-create (`upsert` անունով); `tag_id` — պետք է գոյություն ունենա, հակառակ դեպքում **404** (`NOT_FOUND_TAG`)։
+4. ✅ **Կրկնակի tag նույն URL-ին** — **409 Conflict** (`CONFLICT_TAG_DUPLICATE`, Prisma `P2002` junction-ում)։
+5. ✅ **201 Created** + `{ "id", "name" }`։
 
 ### `GET /urls/:short_code/tags` — List tags
 
 **Հերթական task-եր.**
 
-1. Չկա `short_code` — **404**։
-2. **200** և tag-երի զանգված։
+1. ✅ Չկա `short_code` — **404**։
+2. ✅ **200** — `{ id, name }[]` (name-ով **asc**)։
 
 ---
 
@@ -209,10 +210,10 @@
 
 ## Փուլ 9 — Վերջնական ստուգում (Definition of Done)
 
-- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան `POST /users`, `GET /users/:id/urls`, `POST /urls`, `GET /urls/:short_code`, `DELETE /urls/:short_code`; մնացածը՝ փուլ 7–8)*
+- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան նաև փուլ 7 tag endpoint-ները; մնացածը՝ փուլ 8 bonus)*
 - [x] `short_code` auto-generated, 6 նիշ, unique։
 - [x] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
-- [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK; tag-ի կցման HTTP API (փուլ 7) — դեռ չկա։
+- [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK + **409** `POST .../tags`-ում կրկնակիի համար։
 - [x] HTTP կոդերը և validation-ը հստակ են։ *(կիրառված է `POST /users`, `GET /users/:id/urls` և URL endpoint-ների համար; մնացածը՝ փուլ 6–7)*
 - [ ] (Թիմային) Redirect + click գրանցման hook-ը համաձայնեցված է Mane-ի հետ։
 
@@ -225,8 +226,8 @@
 3. ✅ `GET /urls/:short_code` (redirect + 404/410)
 4. ✅ `GET /users/:id/urls`
 5. ✅ `DELETE /urls/:short_code`
-6. ❌ `POST /urls/:short_code/tags`
-7. ❌ `GET /urls/:short_code/tags`
+6. ✅ `POST /urls/:short_code/tags`
+7. ✅ `GET /urls/:short_code/tags`
 8. ❌ (Bonus) `GET /urls?tag=:name`
 
 Այս հերթականությամբ կարող ես աստիճանաբար integration test անել՝ յուրաքանչյուր փուլ ավարտելուց հետո։
