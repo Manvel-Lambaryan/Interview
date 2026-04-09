@@ -56,3 +56,15 @@ test("query schema still rejects reversed ranges", () => {
     }),
   );
 });
+
+test("query schema accepts mixed ISO and date-only values using inclusive bounds", () => {
+  const parsed = clickAnalyticsQuerySchema.parse({
+    from: "2026-04-09T12:00:00.000Z",
+    to: "2026-04-09",
+  });
+
+  assert.deepEqual(parsed, {
+    from: "2026-04-09T12:00:00.000Z",
+    to: "2026-04-09",
+  });
+});

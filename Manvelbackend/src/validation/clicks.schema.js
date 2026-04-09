@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { isValidAnalyticsDateInput } from "../modules/clicks/clicks.analytics.js";
+import {
+  isValidAnalyticsDateInput,
+  parseAnalyticsBound,
+} from "../modules/clicks/clicks.analytics.js";
 
 const clickDeviceSchema = z.enum(["mobile", "desktop", "tablet", "unknown"]);
 const analyticsDateInputSchema = z
@@ -32,7 +35,8 @@ export const clickAnalyticsQuerySchema = z
     ({ from, to }) =>
       from === undefined ||
       to === undefined ||
-      new Date(from).getTime() <= new Date(to).getTime(),
+      parseAnalyticsBound(from, "from").getTime() <=
+        parseAnalyticsBound(to, "to").getTime(),
     {
       message: "`from` must be earlier than or equal to `to`",
       path: ["from"],
