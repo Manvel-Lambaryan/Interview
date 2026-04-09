@@ -72,7 +72,7 @@
 2. ✅ `short_code`-ի վրա unique index։
 3. ✅ Սահմանիր `ON DELETE` քաղաքականությունը `user` ջնջելիս — ընտրություն՝ **CASCADE** (user-ի ջնջման ժամանակ ջնջվում են նրա բոլոր `short_urls`-ը)։
 
-### 1.3 Tag ❌
+### 1.3 Tag ✅
 
 | Դաշտ | Պահանջ |
 | --- | --- |
@@ -81,8 +81,8 @@
 
 **Task-եր.**
 
-1. Սահմանիր `Tag` աղյուսակը։
-2. Եթե `name` unique է — unique constraint migration-ով։
+1. ✅ Սահմանիր `Tag` աղյուսակը (`schema.prisma`, migration `20260409144158_add_tags`)։
+2. ✅ `name`-ի unique constraint migration-ով (`tags_name_key`)։
 
 ### 1.4 ShortURL_Tag (many-to-many) ❌
 
