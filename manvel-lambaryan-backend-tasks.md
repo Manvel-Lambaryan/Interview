@@ -13,12 +13,12 @@
 | **1.2 — ShortURL** | ✅ | `short_urls`, FK → `users`, `short_code` unique, user delete → **CASCADE** (տես `schema.prisma` / migration `20260409135349_add_short_urls`) |
 | **1.3 — Tag** | ✅ | `tags`, `name` unique, migration `20260409144158_add_tags` |
 | **1.4 — ShortURL_Tag** | ✅ | `short_url_tags`, composite PK `(short_url_id, tag_id)`, `@@index([tag_id])`, migration `20260409144955_add_short_url_tags` |
-| **2 — Short code** | ❌ | — |
+| **2 — Short code** | ✅ | `backend/src/lib/shortCode.js` — `generateShortCode()` (6 նիշ `a-zA-Z0-9`, `crypto.randomInt`), `withUniqueShortCode()` — P2002 `short_code`-ի վրա retry |
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
 | **4–8** | ❌ | `urls`/tags route-ներ, redirect, ցուցակ, ջնջում, tag API, bonus — չեն ավելացվել (`backend/src/routes/index.js` միայն `/users`) |
 | **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
 
-**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2–8 ❌
+**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3–8 ❌
 
 ---
 
@@ -98,11 +98,11 @@
 
 ---
 
-## Փուլ 2 — Short code գեներացիա ❌
+## Փուլ 2 — Short code գեներացիա ✅
 
-1. Իրականացրու ֆունկցիա, որը գեներացնում է **6 նիշ** (օր. `a-zA-Z0-9`)։
-2. **Միակության** ապահովում՝ insert-ի ժամանակ collision-ի դեպքում նորից գեներացիա (կամ DB-ում retry loop) մինչև հաջողություն։
-3. Մի վստահի միայն հավանականությամբ՝ production-ում պարտադիր է unique constraint-ի հետ համակցված retry։
+1. ✅ Իրականացրու ֆունկցիա, որը գեներացնում է **6 նիշ** (օր. `a-zA-Z0-9`) — `generateShortCode()` (`backend/src/lib/shortCode.js`)։
+2. ✅ **Միակության** ապահովում՝ insert-ի ժամանակ collision-ի դեպքում նորից գեներացիա (կամ DB-ում retry loop) մինչև հաջողություն — `withUniqueShortCode(attempt)` (Prisma `P2002` `short_code`-ի վրա → նոր code)։
+3. ✅ Մի վստահի միայն հավանականությամբ՝ production-ում պարտադիր է unique constraint-ի հետ համակցված retry — DB-ում `short_urls.short_code` @unique + retry loop։
 
 ---
 
