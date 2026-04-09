@@ -3,6 +3,7 @@ import { validateBody } from "../../middleware/validateBody.js";
 import { createShortUrlBodySchema } from "../../validation/urls.schema.js";
 import {
   createShortUrlController,
+  deleteShortUrlByCodeController,
   redirectByShortCodeController,
 } from "./urls.controller.js";
 
@@ -13,4 +14,5 @@ urlsRouter.post(
   validateBody(createShortUrlBodySchema),
   createShortUrlController,
 );
+urlsRouter.delete("/:short_code", deleteShortUrlByCodeController);
 urlsRouter.get("/:short_code", redirectByShortCodeController);

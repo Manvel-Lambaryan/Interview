@@ -54,3 +54,13 @@ export async function getRedirectTarget(shortCode) {
 
   return row;
 }
+
+/**
+ * @param {string} shortCode
+ */
+export async function deleteShortUrlByCode(shortCode) {
+  const deleted = await urlsRepository.deleteByShortCode(shortCode);
+  if (deleted === 0) {
+    throw new AppError(404, "Short URL not found", ErrorCodes.NOT_FOUND_URL);
+  }
+}

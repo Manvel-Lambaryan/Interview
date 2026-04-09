@@ -18,3 +18,12 @@ export async function redirectByShortCodeController(req, res, next) {
     next(e);
   }
 }
+
+export async function deleteShortUrlByCodeController(req, res, next) {
+  try {
+    await urlsService.deleteShortUrlByCode(req.params.short_code);
+    res.status(204).send();
+  } catch (e) {
+    next(e);
+  }
+}

@@ -42,3 +42,16 @@ export async function findManyByUserId(userId) {
     orderBy: { created_at: "desc" },
   });
 }
+
+/**
+ * Hard delete by short_code. Cascades short_url_tags per schema.
+ * @param {string} shortCode
+ * @returns {Promise<number>} number of rows deleted (0 or 1)
+ */
+export async function deleteByShortCode(shortCode) {
+  const prisma = getPrisma();
+  const result = await prisma.shortURL.deleteMany({
+    where: { short_code: shortCode },
+  });
+  return result.count;
+}

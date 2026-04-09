@@ -17,10 +17,11 @@
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
 | **4** | ✅ | `POST /urls`, `GET /urls/:short_code` (302, 404, 410); `user_id` body-ում |
 | **5** | ✅ | `GET /users/:id/urls` — 404 user-ի չլինելիս, 200 JSON զանգված, `id`-ի UUID validation |
-| **6–8** | ❌ | DELETE, tag API, bonus query |
+| **6 — DELETE** | ✅ | `DELETE /urls/:short_code` — 404, **204 No Content** (hard delete; `short_url_tags` CASCADE) |
+| **7–8** | ❌ | tag API, bonus query |
 | **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
 
-**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6–8 ❌
+**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7–8 ❌
 
 ---
 
@@ -162,17 +163,17 @@
 
 ---
 
-## Փուլ 6 — API — Ջնջում ❌
+## Փուլ 6 — API — Ջնջում ✅
 
 ### `DELETE /urls/:short_code`
 
 **Հերթական task-եր.**
 
-1. Գտիր `short_code`-ով։
-2. Չկա — **404**։
-3. Կա — ջնջիր (կամ soft delete, եթե թիմը այդպես է որոշել — README-ում hard delete է ենթադրվում)։
-4. Հիշիր FK-երը Mane-ի `Click`-ի հետ — ջնջումը կարող է պահանջել CASCADE կամ նախապես click-երի քաղաքականություն (համաձայնեցրու)։
-5. **204 No Content** կամ **200** դատարկ մարմնով — ընտրիր մեկը և հետևողական եղիր։
+1. ✅ Գտիր `short_code`-ով։
+2. ✅ Չկա — **404**։
+3. ✅ Կա — ջնջիր (կամ soft delete, եթե թիմը այդպես է որոշել — README-ում hard delete է ենթադրվում)։
+4. ✅ Հիշիր FK-երը Mane-ի `Click`-ի հետ — ջնջումը կարող է պահանջել CASCADE կամ նախապես click-երի քաղաքականություն (համաձայնեցրու)։ *(ներկա սխեմայում `Click` չկա; `short_url_tags` → CASCADE `schema.prisma`-ում)*
+5. ✅ **204 No Content** (ընտրություն՝ հետևողական)։
 
 ---
 
@@ -208,7 +209,7 @@
 
 ## Փուլ 9 — Վերջնական ստուգում (Definition of Done)
 
-- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան `POST /users`, `GET /users/:id/urls`, `POST /urls`, `GET /urls/:short_code`; մնացածը՝ փուլ 6–8)*
+- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան `POST /users`, `GET /users/:id/urls`, `POST /urls`, `GET /urls/:short_code`, `DELETE /urls/:short_code`; մնացածը՝ փուլ 7–8)*
 - [x] `short_code` auto-generated, 6 նիշ, unique։
 - [x] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
 - [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK; tag-ի կցման HTTP API (փուլ 7) — դեռ չկա։
@@ -223,7 +224,7 @@
 2. ✅ `POST /urls` (+ short code generation)
 3. ✅ `GET /urls/:short_code` (redirect + 404/410)
 4. ✅ `GET /users/:id/urls`
-5. ❌ `DELETE /urls/:short_code`
+5. ✅ `DELETE /urls/:short_code`
 6. ❌ `POST /urls/:short_code/tags`
 7. ❌ `GET /urls/:short_code/tags`
 8. ❌ (Bonus) `GET /urls?tag=:name`
