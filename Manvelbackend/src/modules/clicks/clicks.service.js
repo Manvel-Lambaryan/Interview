@@ -1,6 +1,7 @@
 import { AppError } from "../../errors/AppError.js";
 import { ErrorCodes } from "../../errors/codes.js";
 import { findUserById } from "../users/users.repository.js";
+import { buildDateRange } from "./clicks.analytics.js";
 import * as clicksRepository from "./clicks.repository.js";
 
 /**
@@ -185,14 +186,4 @@ function detectDeviceFromHeaders(headers) {
   }
 
   return "unknown";
-}
-
-/**
- * @param {{ from?: string; to?: string }} query
- */
-function buildDateRange(query) {
-  return {
-    from: query.from ? new Date(query.from) : undefined,
-    to: query.to ? new Date(query.to) : undefined,
-  };
 }

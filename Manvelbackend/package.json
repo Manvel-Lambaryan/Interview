@@ -9,7 +9,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "test": "echo \"Define test runner in package.json\" && exit 0",
+    "test": "node --test",
     "lint": "echo \"Define eslint in package.json\" && exit 0"
   },
   "engines": {

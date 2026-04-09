@@ -1,6 +1,10 @@
 import { z } from "zod";
+import { isValidAnalyticsDateInput } from "../modules/clicks/clicks.analytics.js";
 
 const clickDeviceSchema = z.enum(["mobile", "desktop", "tablet", "unknown"]);
+const analyticsDateInputSchema = z
+  .string()
+  .refine(isValidAnalyticsDateInput, "Expected ISO datetime or YYYY-MM-DD");
 
 export const shortCodeParamsSchema = z.object({
   short_code: z.string().trim().min(1, "short_code is required"),
@@ -21,8 +25,8 @@ export const recordClickBodySchema = z
 
 export const clickAnalyticsQuerySchema = z
   .object({
-    from: z.string().datetime().optional(),
-    to: z.string().datetime().optional(),
+    from: analyticsDateInputSchema.optional(),
+    to: analyticsDateInputSchema.optional(),
   })
   .refine(
     ({ from, to }) =>
