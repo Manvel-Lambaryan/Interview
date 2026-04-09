@@ -19,21 +19,35 @@ model User {
 
 /// Shortened link owned by a User. Deleting the user removes their short URLs (ON DELETE CASCADE).
 model ShortURL {
-  id            String    @id @default(uuid())
+  id            String         @id @default(uuid())
   user_id       String
-  user          User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   original_url  String
-  short_code    String    @unique
-  created_at    DateTime  @default(now())
+  short_code    String         @unique
+  created_at    DateTime       @default(now())
   expires_at    DateTime?
+  short_url_tags ShortURLTag[]
 
   @@map("short_urls")
 }
 
 /// Tag label; unique name so one canonical tag per label in the system.
 model Tag {
-  id   String @id @default(uuid())
-  name String @unique
+  id             String        @id @default(uuid())
+  name           String        @unique
+  short_url_tags ShortURLTag[]
 
   @@map("tags")
+}
+
+/// Many-to-many between ShortURL and Tag. Same tag cannot attach twice to the same URL (composite PK).
+model ShortURLTag {
+  short_url_id String
+  tag_id       String
+  short_url    ShortURL @relation(fields: [short_url_id], references: [id], onDelete: Cascade)
+  tag          Tag      @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([short_url_id, tag_id])
+  @@index([tag_id])
+  @@map("short_url_tags")
 }

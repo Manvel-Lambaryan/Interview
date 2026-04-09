@@ -4,7 +4,7 @@
 
 ---
 
-## Կատարման վիճակ (ստուգված `backend/`-ում)
+## Կատարման վիճակ (ստուգված `backend/`-ում, codebase-ի հետ համաձայնեցված)
 
 | Փուլ | Վիճակ | Նշում |
 | --- | --- | --- |
@@ -12,7 +12,7 @@
 | **1.1 — User** | ✅ | `users` աղյուսակ, `email` unique, app-ում email validation (`zod`), migration `20260409134000_init_users` |
 | **1.2 — ShortURL** | ✅ | `short_urls`, FK → `users`, `short_code` unique, user delete → **CASCADE** (տես `schema.prisma` / migration `20260409135349_add_short_urls`) |
 | **1.3 — Tag** | ✅ | `tags`, `name` unique, migration `20260409144158_add_tags` |
-| **1.4 — ShortURL_Tag** | ❌ | — |
+| **1.4 — ShortURL_Tag** | ✅ | `short_url_tags`, composite PK `(short_url_id, tag_id)`, `@@index([tag_id])`, migration `20260409144955_add_short_url_tags` |
 | **2 — Short code** | ❌ | — |
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
 | **4–8** | ❌ | `urls`/tags route-ներ, redirect, ցուցակ, ջնջում, tag API, bonus — չեն ավելացվել (`backend/src/routes/index.js` միայն `/users`) |
@@ -84,7 +84,7 @@
 1. ✅ Սահմանիր `Tag` աղյուսակը (`schema.prisma`, migration `20260409144158_add_tags`)։
 2. ✅ `name`-ի unique constraint migration-ով (`tags_name_key`)։
 
-### 1.4 ShortURL_Tag (many-to-many) ❌
+### 1.4 ShortURL_Tag (many-to-many) ✅
 
 | Դաշտ | Պահանջ |
 | --- | --- |
@@ -93,8 +93,8 @@
 
 **Task-եր.**
 
-1. Սահմանիր junction աղյուսակը composite primary key `(short_url_id, tag_id)` կամ surrogate `id` + **unique** `(short_url_id, tag_id)` — README-ի պահանջը՝ *նույն tag-ը երկու անգամ նույն short URL-ին չի կարող կպչել*։
-2. Ավելացրու անհրաժեշտ index-ներ lookup-ների համար։
+1. ✅ Սահմանիր junction աղյուսակը composite primary key `(short_url_id, tag_id)` կամ surrogate `id` + **unique** `(short_url_id, tag_id)` — README-ի պահանջը՝ *նույն tag-ը երկու անգամ նույն short URL-ին չի կարող կպչել*։ *(իրականացված է composite PK-ով `short_url_tags` աղյուսակում, migration `20260409144955_add_short_url_tags`)*
+2. ✅ Ավելացրու անհրաժեշտ index-ներ lookup-ների համար։ *(կա `@@index([tag_id])` — tag-ով filter/JOIN-ների համար)*
 
 ---
 
@@ -209,7 +209,7 @@
 - [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(ներկայումս միայն `POST /users`)*
 - [ ] `short_code` auto-generated, 6 նիշ, unique։
 - [ ] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
-- [ ] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում (DB կամ app validation)։
+- [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK; tag-ի կցման HTTP API (փուլ 7) — դեռ չկա։
 - [x] HTTP կոդերը և validation-ը հստակ են։ *(կիրառված է `POST /users`-ի համար; մնացած endpoint-ներ չկան)*
 - [ ] (Թիմային) Redirect + click գրանցման hook-ը համաձայնեցված է Mane-ի հետ։
 
