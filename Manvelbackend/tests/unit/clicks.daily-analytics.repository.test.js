@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { resetPrisma, setPrisma } from "../../src/config/database.js";
-import { countDailyClicksByShortUrlId } from "../../src/modules/clicks/clicks.repository.js";
+import { countDailyClicksByShortUrlId } from "../../src/modules/analytics/analytics.repository.js";
 
 test("countDailyClicksByShortUrlId builds a grouped ascending SQL query", async () => {
   /** @type {import("@prisma/client").Prisma.Sql | undefined} */

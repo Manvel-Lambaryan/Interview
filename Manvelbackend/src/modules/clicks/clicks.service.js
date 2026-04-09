@@ -1,7 +1,5 @@
 import { AppError } from "../../errors/AppError.js";
 import { ErrorCodes } from "../../errors/codes.js";
-import { findUserById } from "../users/users.repository.js";
-import { buildDateRange } from "./clicks.analytics.js";
 import * as clicksRepository from "./clicks.repository.js";
 
 /**
@@ -54,78 +52,8 @@ export async function recordRedirectClick(shortUrl, metadata) {
     short_url_id: shortUrl.id,
     ip_address: metadata.ip_address,
     country: metadata.country ?? null,
-    device: metadata.device ?? "unknown",
+      device: metadata.device ?? "unknown",
   });
-}
-
-/**
- * @param {string} shortCode
- * @param {{ from?: string; to?: string }} query
- */
-export async function getShortUrlAnalytics(shortCode, query = {}) {
-  const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
-  return {
-    total_clicks: await clicksRepository.countClicksByShortUrlId(
-      shortUrl.id,
-      buildDateRange(query),
-    ),
-  };
-}
-
-/**
- * @param {string} shortCode
- * @param {{ from?: string; to?: string }} query
- */
-export async function getShortUrlDailyAnalytics(shortCode, query = {}) {
-  const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
-  const rows = await clicksRepository.countDailyClicksByShortUrlId(
-    shortUrl.id,
-    buildDateRange(query),
-  );
-
-  return rows.map((row) => ({
-    date: new Date(row.date).toISOString().slice(0, 10),
-    clicks: Number(row.clicks),
-  }));
-}
-
-/**
- * @param {string} shortCode
- * @param {{ from?: string; to?: string }} query
- */
-export async function getShortUrlDeviceAnalytics(shortCode, query = {}) {
-  const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
-  const rows = await clicksRepository.countClicksByDeviceByShortUrlId(
-    shortUrl.id,
-    buildDateRange(query),
-  );
-
-  return rows.map((row) => ({
-    device: row.device ?? "unknown",
-    clicks: row._count._all,
-  }));
-}
-
-/**
- * @param {string} userId
- */
-export async function getUserAnalytics(userId) {
-  const user = await findUserById(userId);
-  if (!user) {
-    throw new AppError(404, "User not found", ErrorCodes.NOT_FOUND_USER);
-  }
-
-  return {
-    total_clicks: await clicksRepository.countClicksByUserId(userId),
-  };
-}
-
-export async function getTopUrls() {
-  const rows = await clicksRepository.findTopShortUrls(5);
-  return rows.map((row) => ({
-    short_code: row.short_code,
-    total_clicks: Number(row.total_clicks),
-  }));
 }
 
 /**

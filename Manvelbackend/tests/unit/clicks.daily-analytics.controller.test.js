@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { getShortUrlDailyAnalyticsController } from "../../src/modules/clicks/clicks.controller.js";
+import { getShortUrlDailyAnalyticsController } from "../../src/modules/analytics/analytics.controller.js";
 import { resetPrisma, setPrisma } from "../../src/config/database.js";
 import { validateQuery } from "../../src/middleware/validateQuery.js";
 import { clickAnalyticsQuerySchema } from "../../src/validation/clicks.schema.js";

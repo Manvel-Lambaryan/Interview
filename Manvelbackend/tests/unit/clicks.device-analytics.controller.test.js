@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { getShortUrlDeviceAnalyticsController } from "../../src/modules/clicks/clicks.controller.js";
+import { getShortUrlDeviceAnalyticsController } from "../../src/modules/analytics/analytics.controller.js";
 import { resetPrisma, setPrisma } from "../../src/config/database.js";
 
 function createJsonResponseRecorder() {
