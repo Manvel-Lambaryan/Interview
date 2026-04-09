@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | **0 — Նախապատրաստում** | ✅ | Node 20+ / Express, `backend/package.json`; `backend/src/config/env.js` (Zod — `DATABASE_URL`, `PORT`, `NODE_ENV`); `backend/.gitignore` (`node_modules`, `.env`, …); PostgreSQL + Prisma (`backend/prisma/`, migrations) |
 | **1.1 — User** | ✅ | `users` աղյուսակ, `email` unique, app-ում email validation (`zod`), migration `20260409134000_init_users` |
-| **1.2 — ShortURL** | ❌ | `schema.prisma`-ում դեռ չկա |
+| **1.2 — ShortURL** | ✅ | `short_urls`, FK → `users`, `short_code` unique, user delete → **CASCADE** (տես `schema.prisma` / migration `20260409135349_add_short_urls`) |
 | **1.3 — Tag** | ❌ | — |
 | **1.4 — ShortURL_Tag** | ❌ | — |
 | **2 — Short code** | ❌ | — |
@@ -55,7 +55,7 @@
 2. ✅ Ավելացրու `email`-ի unique constraint։
 3. ✅ (Կամայական բայց խորհուրդ է տրվում) Email format validation application շերտում։
 
-### 1.2 ShortURL ❌
+### 1.2 ShortURL ✅
 
 | Դաշտ | Պահանջ |
 | --- | --- |
@@ -68,9 +68,9 @@
 
 **Task-եր.**
 
-1. Սահմանիր `ShortURL` աղյուսակը FK-ով `User`-ին։
-2. `short_code`-ի վրա unique index։
-3. Սահմանիր `ON DELETE` քաղաքականությունը `user` ջնջելիս (օր. CASCADE կամ RESTRICT — փաստաթղթագրիր ընտրությունը)։
+1. ✅ Սահմանիր `ShortURL` աղյուսակը FK-ով `User`-ին։
+2. ✅ `short_code`-ի վրա unique index։
+3. ✅ Սահմանիր `ON DELETE` քաղաքականությունը `user` ջնջելիս — ընտրություն՝ **CASCADE** (user-ի ջնջման ժամանակ ջնջվում են նրա բոլոր `short_urls`-ը)։
 
 ### 1.3 Tag ❌
 
