@@ -12,6 +12,17 @@ const server = app.listen(env.PORT, () => {
   console.log(`Listening on http://localhost:${env.PORT}`);
 });
 
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(
+      `Port ${env.PORT} is already in use. Stop the other process or set PORT in .env.`,
+    );
+  } else {
+    console.error(err);
+  }
+  process.exit(1);
+});
+
 function shutdown() {
   server.close(async () => {
     await getPrisma().$disconnect();
