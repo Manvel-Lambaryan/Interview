@@ -44,6 +44,25 @@ export async function findManyByUserId(userId) {
 }
 
 /**
+ * All short URLs that have the given tag name (single query via relation / JOIN).
+ * @param {string} tagName
+ * @returns {Promise<import("@prisma/client").ShortURL[]>}
+ */
+export async function findManyByTagName(tagName) {
+  const prisma = getPrisma();
+  return prisma.shortURL.findMany({
+    where: {
+      short_url_tags: {
+        some: {
+          tag: { name: tagName },
+        },
+      },
+    },
+    orderBy: { created_at: "desc" },
+  });
+}
+
+/**
  * Hard delete by short_code. Cascades short_url_tags per schema.
  * @param {string} shortCode
  * @returns {Promise<number>} number of rows deleted (0 or 1)

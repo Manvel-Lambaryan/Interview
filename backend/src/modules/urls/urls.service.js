@@ -122,3 +122,11 @@ export async function listTagsForShortUrl(shortCode) {
   }
   return tags;
 }
+
+/**
+ * @param {string} tagName
+ * @returns {Promise<import("@prisma/client").ShortURL[]>}
+ */
+export async function listShortUrlsByTagName(tagName) {
+  return urlsRepository.findManyByTagName(tagName);
+}

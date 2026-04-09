@@ -48,3 +48,12 @@ export async function listTagsForShortUrlController(req, res, next) {
     next(e);
   }
 }
+
+export async function listShortUrlsByTagController(req, res, next) {
+  try {
+    const rows = await urlsService.listShortUrlsByTagName(req.query.tag);
+    res.status(200).json(rows.map(toShortUrlResponse));
+  } catch (e) {
+    next(e);
+  }
+}

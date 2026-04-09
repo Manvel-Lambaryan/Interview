@@ -19,10 +19,10 @@
 | **5** | ✅ | `GET /users/:id/urls` — 404 user-ի չլինելիս, 200 JSON զանգված, `id`-ի UUID validation |
 | **6 — DELETE** | ✅ | `DELETE /urls/:short_code` — 404, **204 No Content** (hard delete; `short_url_tags` CASCADE) |
 | **7 — Tags** | ✅ | `POST/GET /urls/:short_code/tags`; body՝ `tag_name` **կամ** `tag_id` (`.strict()`); կրկնակի → **409**; կցում → **201** + `{ id, name }` |
-| **8 — Bonus** | ❌ | `GET /urls?tag=:name` |
+| **8 — Bonus** | ✅ | `GET /urls?tag=:name` |
 | **9 — DoD** | ⏳ | Տես ստորև checkbox-ները |
 
-**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7 ✅ · 8 ❌
+**Արագ ցուցակ (endpoint priority).** 1 ✅ · 2 (lib) ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7 ✅ · 8 ✅
 
 ---
 
@@ -199,7 +199,7 @@
 
 ---
 
-## Փուլ 8 — Bonus ❌
+## Փուլ 8 — Bonus ✅
 
 ### `GET /urls?tag=:name`
 
@@ -210,7 +210,7 @@
 
 ## Փուլ 9 — Վերջնական ստուգում (Definition of Done)
 
-- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան նաև փուլ 7 tag endpoint-ները; մնացածը՝ փուլ 8 bonus)*
+- [ ] Բոլոր endpoint-ները README-ի աղյուսակին համապատասխան են։ *(կան նաև փուլ 7–8 tag/filter endpoint-ները)*
 - [x] `short_code` auto-generated, 6 նիշ, unique։
 - [x] `GET /urls/:short_code` — 404 / 410 / redirect վարքը ճիշտ է։
 - [x] Նույն short URL-ին նույն tag-ը երկու անգամ չի կպչում — **DB**-ում `short_url_tags` composite PK + **409** `POST .../tags`-ում կրկնակիի համար։
@@ -228,6 +228,6 @@
 5. ✅ `DELETE /urls/:short_code`
 6. ✅ `POST /urls/:short_code/tags`
 7. ✅ `GET /urls/:short_code/tags`
-8. ❌ (Bonus) `GET /urls?tag=:name`
+8. ✅ (Bonus) `GET /urls?tag=:name`
 
 Այս հերթականությամբ կարող ես աստիճանաբար integration test անել՝ յուրաքանչյուր փուլ ավարտելուց հետո։

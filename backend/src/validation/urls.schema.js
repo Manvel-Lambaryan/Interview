@@ -18,3 +18,7 @@ export const createShortUrlBodySchema = z.object({
     .union([z.string().datetime(), z.null()])
     .optional(),
 });
+
+export const listUrlsByTagQuerySchema = z.object({
+  tag: z.string().trim().min(1, "tag is required"),
+});
