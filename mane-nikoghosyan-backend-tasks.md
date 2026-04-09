@@ -17,7 +17,7 @@
 | **6 — GET /users/:id/analytics** | ✅ | Միացված է `Manvelbackend/src/modules/users/` router/controller-ի հետ |
 | **7 — GET /urls/top** | ✅ | Իրականացված է DB aggregation query-ով և top 5 limit-ով |
 | **8 — Bonus** | ✅ | `from` / `to` query filtering-ը ավելացված է analytics endpoint-ներին |
-| **9 — Integration with redirect** | 🟡 | Code-level integration արված է, բայց live DB/runtime verification դեռ վերջնականորեն չի հաստատվել |
+| **9 — Integration with redirect** | ✅ | Redirect flow-ի click recording-ը live ստուգվել է աշխատող backend-ով |
 
 **Արագ ցուցակ (endpoint priority).** 1 (entity) ✅ · 2 ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7 ✅ · 8 ✅
 
@@ -168,7 +168,7 @@
 
 ---
 
-## Փուլ 9 — Վերջնական ստուգում (Definition of Done) 🟡
+## Փուլ 9 — Վերջնական ստուգում (Definition of Done) ✅
 
 - [x] `Click` entity-ն migration-ով ստեղծված է և կապված է `ShortURL`-ին FK-ով։
 - [x] `clicked_at`-ը auto-set է արվում current timestamp-ով։
@@ -179,7 +179,7 @@
 - [x] `GET /urls/top` endpoint-ը վերադարձնում է top 5 most clicked short URLs և app-level sorting չի անում։
 - [x] Redirect ↔ click integration-ը միացված է Manvel-ի `GET /urls/:short_code` flow-ի հետ։
 
-**Մնացած բաց կետը.** Live DB migration/app startup verification-ը դեռ ամբողջությամբ չի ավարտվել այս workspace-ում. `npm ci` և `prisma generate` աշխատել են, բայց `prisma migrate status`-ը DB/schema engine մակարդակում ավարտվել է ընդհանուր `Schema engine error`-ով։
+**Live verification summary.** `npm ci`, `prisma generate`, `prisma migrate deploy`, local app startup (`PORT=3001`) և happy-path + 404 HTTP checks-ը հաջողությամբ անցել են։
 
 ---
 
