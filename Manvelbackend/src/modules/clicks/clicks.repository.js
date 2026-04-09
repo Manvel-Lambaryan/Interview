@@ -118,27 +118,19 @@ export async function countClicksByUserId(userId) {
 
 export async function findTopShortUrls(limit = 5) {
   const prisma = getPrisma();
-  return prisma.shortURL.findMany({
-    take: limit,
-    select: {
-      short_code: true,
-      _count: {
-        select: {
-          clicks: true,
-        },
-      },
-    },
-    orderBy: [
-      {
-        clicks: {
-          _count: "desc",
-        },
-      },
-      {
-        short_code: "asc",
-      },
-    ],
-  });
+  return prisma.$queryRaw(
+    Prisma.sql`
+      SELECT
+        su.short_code,
+        COUNT(*)::int AS total_clicks
+      FROM clicks c
+      INNER JOIN short_urls su
+        ON su.id = c.short_url_id
+      GROUP BY su.id, su.short_code
+      ORDER BY COUNT(*) DESC, su.short_code ASC
+      LIMIT ${limit}
+    `,
+  );
 }
 
 /**

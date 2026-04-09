@@ -123,7 +123,7 @@ export async function getTopUrls() {
   const rows = await clicksRepository.findTopShortUrls(5);
   return rows.map((row) => ({
     short_code: row.short_code,
-    total_clicks: row._count.clicks,
+    total_clicks: Number(row.total_clicks),
   }));
 }
 

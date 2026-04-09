@@ -8,18 +8,18 @@
 
 | Փուլ | Վիճակ | Նշում |
 | --- | --- | --- |
-| **0 — Նախապատրաստում** | 🟡 | Կա առանձին clicks մասի skeleton՝ `src/modules/clicks/`, բայց ամբողջական runnable backend setup Mane-ի մասով այստեղ դեռ ամբողջությամբ չի երևում |
-| **1 — Click entity** | ✅ | `migrations/20260409161000_create_clicks.sql`, `src/modules/clicks/click.model.ts`, `src/modules/clicks/click.types.ts` |
-| **2 — POST /urls/:short_code/click** | ⬜ | Endpoint/controller/service/repository շերտերը դեռ չկան |
-| **3 — GET /urls/:short_code/analytics** | ⬜ | Չի գտնվել |
-| **4 — GET /urls/:short_code/analytics/daily** | ⬜ | Չի գտնվել |
-| **5 — GET /urls/:short_code/analytics/devices** | ⬜ | Չի գտնվել |
-| **6 — GET /users/:id/analytics** | ⬜ | Չի գտնվել |
-| **7 — GET /urls/top** | ⬜ | Չի գտնվել |
-| **8 — Bonus** | ⬜ | Date range filtering դեռ չկա |
-| **9 — Integration with redirect** | 🟡 | Hook-ի տեղը նշված է `Manvelbackend/src/modules/urls/urls.controller.js`-ում, բայց իրական click record կանչ դեռ չկա |
+| **0 — Նախապատրաստում** | ✅ | Mane-ի clicks մասը տեղափոխված/միացված է runnable backend-ի ներսում՝ `Manvelbackend/src/modules/clicks/`, route/validation/service շերտերով |
+| **1 — Click entity** | ✅ | Prisma schema + migration ավելացված են runnable backend-ում՝ `Manvelbackend/prisma/schema.prisma`, `Manvelbackend/prisma/migrations/20260409170000_add_clicks/migration.sql` |
+| **2 — POST /urls/:short_code/click** | ✅ | Կա route/controller/service/repository chain՝ `Manvelbackend/src/modules/clicks/` |
+| **3 — GET /urls/:short_code/analytics** | ✅ | Իրականացված է total count aggregation-ով |
+| **4 — GET /urls/:short_code/analytics/daily** | ✅ | Իրականացված է DB grouping + ascending date order-ով |
+| **5 — GET /urls/:short_code/analytics/devices** | ✅ | Իրականացված է device grouping-ով |
+| **6 — GET /users/:id/analytics** | ✅ | Միացված է `Manvelbackend/src/modules/users/` router/controller-ի հետ |
+| **7 — GET /urls/top** | ✅ | Իրականացված է DB aggregation query-ով և top 5 limit-ով |
+| **8 — Bonus** | ✅ | `from` / `to` query filtering-ը ավելացված է analytics endpoint-ներին |
+| **9 — Integration with redirect** | 🟡 | Code-level integration արված է, բայց live DB/runtime verification դեռ վերջնականորեն չի հաստատվել |
 
-**Արագ ցուցակ (endpoint priority).** 1 (entity) ✅ · 2 ⬜ · 3 ⬜ · 4 ⬜ · 5 ⬜ · 6 ⬜ · 7 ⬜ · 8 ⬜
+**Արագ ցուցակ (endpoint priority).** 1 (entity) ✅ · 2 ✅ · 3 ✅ · 4 ✅ · 5 ✅ · 6 ✅ · 7 ✅ · 8 ✅
 
 ---
 
@@ -31,7 +31,7 @@
 
 ---
 
-## Փուլ 0 — Նախապատրաստում 🟡
+## Փուլ 0 — Նախապատրաստում ✅
 
 1. Համաձայնեցրու նույն DB/schema contract-ը Manvel-ի մասի հետ, որպեսզի `clicks.short_url_id` FK-ն ճիշտ հղվի `short_urls.id`-ին։
 2. Սահմանիր, թե click recording-ը կատարվելու է.
@@ -64,7 +64,7 @@
 
 ---
 
-## Փուլ 2 — API — Click գրանցում ⬜
+## Փուլ 2 — API — Click գրանցում ✅
 
 ### `POST /urls/:short_code/click` — Record a click event
 
@@ -85,7 +85,7 @@
 
 ---
 
-## Փուլ 3 — API — Total analytics ⬜
+## Փուլ 3 — API — Total analytics ✅
 
 ### `GET /urls/:short_code/analytics`
 
@@ -98,7 +98,7 @@
 
 ---
 
-## Փուլ 4 — API — Daily analytics ⬜
+## Փուլ 4 — API — Daily analytics ✅
 
 ### `GET /urls/:short_code/analytics/daily`
 
@@ -114,7 +114,7 @@
 
 ---
 
-## Փուլ 5 — API — Device analytics ⬜
+## Փուլ 5 — API — Device analytics ✅
 
 ### `GET /urls/:short_code/analytics/devices`
 
@@ -128,7 +128,7 @@
 
 ---
 
-## Փուլ 6 — API — User aggregate analytics ⬜
+## Փուլ 6 — API — User aggregate analytics ✅
 
 ### `GET /users/:id/analytics`
 
@@ -142,7 +142,7 @@
 
 ---
 
-## Փուլ 7 — API — Top URLs ⬜
+## Փուլ 7 — API — Top URLs ✅
 
 ### `GET /urls/top`
 
@@ -157,7 +157,7 @@
 
 ---
 
-## Փուլ 8 — Bonus ⬜
+## Փուլ 8 — Bonus ✅
 
 ### `GET /urls/:short_code/analytics?from=DATE&to=DATE`
 
@@ -168,27 +168,29 @@
 
 ---
 
-## Փուլ 9 — Վերջնական ստուգում (Definition of Done) ⬜
+## Փուլ 9 — Վերջնական ստուգում (Definition of Done) 🟡
 
 - [x] `Click` entity-ն migration-ով ստեղծված է և կապված է `ShortURL`-ին FK-ով։
 - [x] `clicked_at`-ը auto-set է արվում current timestamp-ով։
 - [x] `device` արժեքները սահմանափակված են `mobile`, `desktop`, `tablet`, `unknown` enum-ով։
-- [ ] `POST /urls/:short_code/click` endpoint-ը գրանցում է click event և վերադարձնում է consistent HTTP response։
-- [ ] Բոլոր analytics endpoint-ները աշխատում են DB aggregation-ով։
-- [ ] `GET /urls/:short_code/analytics/daily` արդյունքները sort են date ascending-ով։
-- [ ] `GET /urls/top` endpoint-ը վերադարձնում է top 5 most clicked short URLs և app-level sorting չի անում։
-- [ ] Redirect ↔ click integration-ը միացված է Manvel-ի `GET /urls/:short_code` flow-ի հետ։
+- [x] `POST /urls/:short_code/click` endpoint-ը գրանցում է click event և վերադարձնում է consistent HTTP response։
+- [x] Բոլոր analytics endpoint-ները աշխատում են DB aggregation-ով։
+- [x] `GET /urls/:short_code/analytics/daily` արդյունքները sort են date ascending-ով։
+- [x] `GET /urls/top` endpoint-ը վերադարձնում է top 5 most clicked short URLs և app-level sorting չի անում։
+- [x] Redirect ↔ click integration-ը միացված է Manvel-ի `GET /urls/:short_code` flow-ի հետ։
+
+**Մնացած բաց կետը.** Live DB migration/app startup verification-ը դեռ ամբողջությամբ չի ավարտվել այս workspace-ում. `npm ci` և `prisma generate` աշխատել են, բայց `prisma migrate status`-ը DB/schema engine մակարդակում ավարտվել է ընդհանուր `Schema engine error`-ով։
 
 ---
 
 ## Հավելված — Endpoint-ների արագ ցուցակ (առաջնահերթություն իրականացման)
 
-1. ⬜ `POST /urls/:short_code/click`
-2. ⬜ `GET /urls/:short_code/analytics`
-3. ⬜ `GET /urls/:short_code/analytics/daily`
-4. ⬜ `GET /urls/:short_code/analytics/devices`
-5. ⬜ `GET /users/:id/analytics`
-6. ⬜ `GET /urls/top`
-7. ⬜ (Bonus) `GET /urls/:short_code/analytics?from=DATE&to=DATE`
+1. ✅ `POST /urls/:short_code/click`
+2. ✅ `GET /urls/:short_code/analytics`
+3. ✅ `GET /urls/:short_code/analytics/daily`
+4. ✅ `GET /urls/:short_code/analytics/devices`
+5. ✅ `GET /users/:id/analytics`
+6. ✅ `GET /urls/top`
+7. ✅ (Bonus) `GET /urls/:short_code/analytics?from=DATE&to=DATE`
 
 Այս հերթականությամբ կարող ես նախ ավարտել click ingestion-ը, հետո կառուցել analytics aggregation-ները, և վերջում միացնել redirect integration-ը։
