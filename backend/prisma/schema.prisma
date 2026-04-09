@@ -29,3 +29,11 @@ model ShortURL {
 
   @@map("short_urls")
 }
+
+/// Tag label; unique name so one canonical tag per label in the system.
+model Tag {
+  id   String @id @default(uuid())
+  name String @unique
+
+  @@map("tags")
+}

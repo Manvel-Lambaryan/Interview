@@ -11,7 +11,7 @@
 | **0 — Նախապատրաստում** | ✅ | Node 20+ / Express, `backend/package.json`; `backend/src/config/env.js` (Zod — `DATABASE_URL`, `PORT`, `NODE_ENV`); `backend/.gitignore` (`node_modules`, `.env`, …); PostgreSQL + Prisma (`backend/prisma/`, migrations) |
 | **1.1 — User** | ✅ | `users` աղյուսակ, `email` unique, app-ում email validation (`zod`), migration `20260409134000_init_users` |
 | **1.2 — ShortURL** | ✅ | `short_urls`, FK → `users`, `short_code` unique, user delete → **CASCADE** (տես `schema.prisma` / migration `20260409135349_add_short_urls`) |
-| **1.3 — Tag** | ❌ | — |
+| **1.3 — Tag** | ✅ | `tags`, `name` unique, migration `20260409144158_add_tags` |
 | **1.4 — ShortURL_Tag** | ❌ | — |
 | **2 — Short code** | ❌ | — |
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
