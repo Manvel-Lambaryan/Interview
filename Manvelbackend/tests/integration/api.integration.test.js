@@ -31,6 +31,46 @@ test("GET unknown path returns 404 JSON", async () => {
   }
 });
 
+test("GET /health returns 200 when database ping succeeds", async () => {
+  setPrisma({
+    $queryRaw: async () => [{ "?column?": 1 }],
+  });
+
+  const app = createApp();
+  const server = await startTestServer(app);
+  try {
+    const { status, body } = await httpRequest(server.baseUrl, "/health", {
+      method: "GET",
+    });
+    assert.equal(status, 200);
+    assert.deepEqual(body, { status: "ok", database: "up" });
+  } finally {
+    await server.close();
+    resetPrisma();
+  }
+});
+
+test("GET /health returns 503 when database ping fails", async () => {
+  setPrisma({
+    $queryRaw: async () => {
+      throw new Error("connection refused");
+    },
+  });
+
+  const app = createApp();
+  const server = await startTestServer(app);
+  try {
+    const { status, body } = await httpRequest(server.baseUrl, "/health", {
+      method: "GET",
+    });
+    assert.equal(status, 503);
+    assert.deepEqual(body, { status: "unhealthy", database: "down" });
+  } finally {
+    await server.close();
+    resetPrisma();
+  }
+});
+
 test("POST /users with invalid body returns 400 validation", async () => {
   const app = createApp();
   const server = await startTestServer(app);
