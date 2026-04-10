@@ -27,9 +27,6 @@ export async function findManyByUserId(userId) {
   });
 }
 
-/**
- * All short URLs that have the given tag name (single query via relation / JOIN).
- */
 export async function findManyByTagName(tagName) {
   const prisma = getPrisma();
   return prisma.shortURL.findMany({
@@ -44,10 +41,6 @@ export async function findManyByTagName(tagName) {
   });
 }
 
-/**
- * Hard delete by short_code. Cascades short_url_tags per schema.
- * Returns number of rows deleted (0 or 1).
- */
 export async function deleteByShortCode(shortCode) {
   const prisma = getPrisma();
   const result = await prisma.shortURL.deleteMany({

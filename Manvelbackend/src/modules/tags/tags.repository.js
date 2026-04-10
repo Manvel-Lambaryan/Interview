@@ -5,9 +5,6 @@ export async function findTagById(id) {
   return prisma.tag.findUnique({ where: { id } });
 }
 
-/**
- * Ensures a tag row exists for this label (unique `name`).
- */
 export async function upsertTagByName(name) {
   const prisma = getPrisma();
   return prisma.tag.upsert({
@@ -24,7 +21,6 @@ export async function createShortUrlTag(shortUrlId, tagId) {
   });
 }
 
-/** Returns `null` if short URL missing. */
 export async function findTagsByShortCode(shortCode) {
   const prisma = getPrisma();
   const row = await prisma.shortURL.findUnique({

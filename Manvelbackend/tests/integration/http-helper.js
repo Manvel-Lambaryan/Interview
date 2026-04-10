@@ -1,9 +1,5 @@
 import { createServer } from "node:http";
 
-/**
- * Binds the Express app to an ephemeral port on 127.0.0.1.
- * @param {import("express").Express} app
- */
 export function startTestServer(app) {
   return new Promise((resolve, reject) => {
     const server = createServer(app);
@@ -24,11 +20,7 @@ export function startTestServer(app) {
   });
 }
 
-/**
- * @param {string} baseUrl
- * @param {string} pathname
- * @param {RequestInit & { parseJson?: boolean }} [options]
- */
+
 export async function httpRequest(baseUrl, pathname, options = {}) {
   const { parseJson = true, ...init } = options;
   const url = new URL(pathname, baseUrl);
@@ -45,7 +37,6 @@ export async function httpRequest(baseUrl, pathname, options = {}) {
     try {
       body = JSON.parse(text);
     } catch {
-      /* leave as string */
     }
   } else if (!parseJson) {
     body = text;

@@ -1,9 +1,5 @@
 import { getPrisma } from "../../config/database.js";
 
-/**
- * Shared lookup contract for click tracking and analytics endpoints.
- * Keeping this inside the runnable backend avoids the split skeleton under `/src`.
- */
 export async function findShortUrlByCode(shortCode) {
   const prisma = getPrisma();
   return prisma.shortURL.findUnique({

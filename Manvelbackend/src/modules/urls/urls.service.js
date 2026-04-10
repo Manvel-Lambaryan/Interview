@@ -53,10 +53,6 @@ export async function deleteShortUrlByCode(shortCode) {
   }
 }
 
-/**
- * Attaches a tag to a short URL. Duplicate (same tag on same URL) → 409.
- * Body: either `{ tag_name }` (find-or-create tag by name) or `{ tag_id }` (existing tag).
- */
 export async function attachTagToShortUrl(shortCode, body) {
   const shortUrl = await urlsRepository.findByShortCode(shortCode);
   if (!shortUrl) {

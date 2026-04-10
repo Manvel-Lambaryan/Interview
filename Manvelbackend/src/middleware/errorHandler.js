@@ -2,12 +2,7 @@ import { env } from "../config/env.js";
 import { logger } from "../config/logger.js";
 import { AppError } from "../errors/AppError.js";
 
-/**
- * @param {unknown} err
- * @param {import("express").Request} req
- * @param {import("express").Response} res
- * @param {import("express").NextFunction} _next
- */
+
 export function errorHandler(err, req, res, _next) {
   const log = req.log ?? logger;
 

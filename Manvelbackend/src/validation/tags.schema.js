@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-/** Exactly one of `tag_name` (find-or-create by label) or `tag_id` (existing tag). */
 export const attachTagBodySchema = z.union([
   z
     .object({

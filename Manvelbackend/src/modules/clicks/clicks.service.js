@@ -3,11 +3,6 @@ import { ErrorCodes } from "../../errors/codes.js";
 import { recordClick } from "../../integrations/clickRecording.js";
 import * as clicksRepository from "./clicks.repository.js";
 
-/**
- * Phase 0 contract helper:
- * both `POST /urls/:short_code/click` and redirect tracking should resolve
- * the target short URL through the same service-level lookup.
- */
 export async function getShortUrlByCodeOrThrow(shortCode) {
   const shortUrl = await clicksRepository.findShortUrlByCode(shortCode);
   if (!shortUrl) {

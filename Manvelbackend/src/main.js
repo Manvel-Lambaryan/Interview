@@ -1,7 +1,3 @@
-/**
- * Process entry — env load, DB, HTTP server.
- * Structure: see ../BACKEND_FOLDER_SCHEMA.md
- */
 import { env } from "./config/env.js";
 import { getPrisma } from "./config/database.js";
 import { logger } from "./config/logger.js";
