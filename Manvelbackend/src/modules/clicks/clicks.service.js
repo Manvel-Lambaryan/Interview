@@ -1,5 +1,6 @@
 import { AppError } from "../../errors/AppError.js";
 import { ErrorCodes } from "../../errors/codes.js";
+import { recordClick } from "../../integrations/clickRecording.js";
 import * as clicksRepository from "./clicks.repository.js";
 
 /**
@@ -18,24 +19,7 @@ export async function getShortUrlByCodeOrThrow(shortCode) {
 
 export async function recordClickByShortCode(shortCode, metadata) {
   const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
-  return clicksRepository.createClick({
-    short_url_id: shortUrl.id,
-    ip_address: metadata.ip_address,
-    country: metadata.country ?? null,
-    device: metadata.device ?? "unknown",
-  });
-}
-
-/**
- * Shared hook for redirect flow so we do not make an internal HTTP request.
- */
-export async function recordRedirectClick(shortUrl, metadata) {
-  return clicksRepository.createClick({
-    short_url_id: shortUrl.id,
-    ip_address: metadata.ip_address,
-    country: metadata.country ?? null,
-    device: metadata.device ?? "unknown",
-  });
+  return recordClick(shortUrl.id, metadata);
 }
 
 export function getClickMetadataFromRequest(reqLike) {
