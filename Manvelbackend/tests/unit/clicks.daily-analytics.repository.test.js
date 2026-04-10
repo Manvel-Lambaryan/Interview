@@ -4,7 +4,6 @@ import { resetPrisma, setPrisma } from "../../src/config/database.js";
 import { countDailyClicksByShortUrlId } from "../../src/modules/analytics/analytics.repository.js";
 
 test("countDailyClicksByShortUrlId builds a grouped ascending SQL query", async () => {
-  /** @type {import("@prisma/client").Prisma.Sql | undefined} */
   let capturedQuery;
 
   setPrisma({

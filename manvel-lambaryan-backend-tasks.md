@@ -12,7 +12,7 @@
 | **1.1 — User** | ✅ | `users` աղյուսակ, `email` unique, app-ում email validation (`zod`), migration `20260409134000_init_users` |
 | **1.2 — ShortURL** | ✅ | `short_urls`, FK → `users`, `short_code` unique, user delete → **CASCADE** (տես `schema.prisma` / migration `20260409135349_add_short_urls`) |
 | **1.3 — Tag** | ✅ | `tags`, `name` unique, migration `20260409144158_add_tags` |
-| **1.4 — ShortURL_Tag** | ✅ | `short_url_tags`, composite PK `(short_url_id, tag_id)`, `@@index([tag_id])`, migration `20260409144955_add_short_url_tags` |
+| **1.4 — ShortURL_Tag** | ✅ | `short_url_tags`, composite PK `(short_url_id, tag_id)`, index `tag_id`-ի վրա, migration `20260409144955_add_short_url_tags` |
 | **2 — Short code** | ✅ | `Manvelbackend/src/lib/shortCode.js` — `generateShortCode()` (6 նիշ `a-zA-Z0-9`, `crypto.randomInt`), `withUniqueShortCode()` — P2002 `short_code`-ի վրա retry |
 | **3 — POST /users** | ✅ | `POST /users` → 201, conflict 409 (`P2002`), validation |
 | **4** | ✅ | `POST /urls`, `GET /urls/:short_code` (302, 404, 410); `user_id` body-ում |
@@ -98,7 +98,7 @@
 **Task-եր.**
 
 1. ✅ Սահմանիր junction աղյուսակը composite primary key `(short_url_id, tag_id)` կամ surrogate `id` + **unique** `(short_url_id, tag_id)` — README-ի պահանջը՝ *նույն tag-ը երկու անգամ նույն short URL-ին չի կարող կպչել*։ *(իրականացված է composite PK-ով `short_url_tags` աղյուսակում, migration `20260409144955_add_short_url_tags`)*
-2. ✅ Ավելացրու անհրաժեշտ index-ներ lookup-ների համար։ *(կա `@@index([tag_id])` — tag-ով filter/JOIN-ների համար)*
+2. ✅ Ավելացրու անհրաժեշտ index-ներ lookup-ների համար։ *(կա index `tag_id`-ի վրա — tag-ով filter/JOIN-ների համար)*
 
 ---
 
@@ -106,7 +106,7 @@
 
 1. ✅ Իրականացրու ֆունկցիա, որը գեներացնում է **6 նիշ** (օր. `a-zA-Z0-9`) — `generateShortCode()` (`Manvelbackend/src/lib/shortCode.js`)։
 2. ✅ **Միակության** ապահովում՝ insert-ի ժամանակ collision-ի դեպքում նորից գեներացիա (կամ DB-ում retry loop) մինչև հաջողություն — `withUniqueShortCode(attempt)` (Prisma `P2002` `short_code`-ի վրա → նոր code)։
-3. ✅ Մի վստահի միայն հավանականությամբ՝ production-ում պարտադիր է unique constraint-ի հետ համակցված retry — DB-ում `short_urls.short_code` @unique + retry loop։
+3. ✅ Մի վստահի միայն հավանականությամբ՝ production-ում պարտադիր է unique constraint-ի հետ համակցված retry — DB-ում `short_urls.short_code` unique constraint + retry loop։
 
 ---
 

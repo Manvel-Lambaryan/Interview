@@ -4,7 +4,6 @@ import { resetPrisma, setPrisma } from "../../src/config/database.js";
 import { findTopShortUrls } from "../../src/modules/analytics/analytics.repository.js";
 
 test("findTopShortUrls builds a DB-level top-N aggregation query", async () => {
-  /** @type {import("@prisma/client").Prisma.Sql | undefined} */
   let capturedQuery;
 
   setPrisma({
