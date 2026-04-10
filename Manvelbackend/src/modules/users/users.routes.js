@@ -5,10 +5,7 @@ import {
   registerUserBodySchema,
   userIdParamsSchema,
 } from "../../validation/users.schema.js";
-import {
-  listUserUrlsController,
-  registerUserController,
-} from "./users.controller.js";
+import { listUserUrlsController, registerUserController } from "./users.controller.js";
 
 export const usersRouter = Router();
 

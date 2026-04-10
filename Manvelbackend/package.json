@@ -6,10 +6,11 @@
   "scripts": {
     "dev": "node --watch src/main.js",
     "start": "node src/main.js",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:push": "prisma db push",
-    "test": "echo \"Define test runner in package.json\" && exit 0",
+    "db:generate": "node scripts/prisma-env.mjs generate",
+    "db:migrate": "node scripts/prisma-env.mjs migrate dev",
+    "db:migrate:deploy": "node scripts/prisma-env.mjs migrate deploy",
+    "db:push": "node scripts/prisma-env.mjs db push",
+    "test": "node --test",
     "lint": "echo \"Define eslint in package.json\" && exit 0"
   },
   "engines": {
