@@ -23,6 +23,9 @@ const envSchema = z.object({
     .default("development"),
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  LOG_LEVEL: z
+    .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
+    .default("info"),
 });
 
 export const env = envSchema.parse(process.env);
