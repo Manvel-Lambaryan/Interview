@@ -1,6 +1,3 @@
-/**
- * @param {import("@prisma/client").ShortURL} row
- */
 export function toShortUrlResponse(row) {
   return {
     id: row.id,
@@ -12,9 +9,6 @@ export function toShortUrlResponse(row) {
   };
 }
 
-/**
- * @param {import("@prisma/client").Tag} row
- */
 export function toTagResponse(row) {
   return {
     id: row.id,

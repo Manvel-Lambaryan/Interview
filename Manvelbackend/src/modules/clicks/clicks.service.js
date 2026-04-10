@@ -1,15 +1,8 @@
 import { AppError } from "../../errors/AppError.js";
 import { ErrorCodes } from "../../errors/codes.js";
+import { recordClick } from "../../integrations/clickRecording.js";
 import * as clicksRepository from "./clicks.repository.js";
 
-/**
- * Phase 0 contract helper:
- * both `POST /urls/:short_code/click` and redirect tracking should resolve
- * the target short URL through the same service-level lookup.
- *
- * @param {string} shortCode
- * @returns {Promise<import("@prisma/client").ShortURL>}
- */
 export async function getShortUrlByCodeOrThrow(shortCode) {
   const shortUrl = await clicksRepository.findShortUrlByCode(shortCode);
   if (!shortUrl) {
@@ -19,54 +12,11 @@ export async function getShortUrlByCodeOrThrow(shortCode) {
   return shortUrl;
 }
 
-/**
- * @param {string} shortCode
- * @param {{
- *   ip_address: string;
- *   country?: string | null;
- *   device?: "mobile" | "desktop" | "tablet" | "unknown" | null;
- * }} metadata
- */
 export async function recordClickByShortCode(shortCode, metadata) {
   const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
-  return clicksRepository.createClick({
-    short_url_id: shortUrl.id,
-    ip_address: metadata.ip_address,
-    country: metadata.country ?? null,
-    device: metadata.device ?? "unknown",
-  });
+  return recordClick(shortUrl.id, metadata);
 }
 
-/**
- * Shared hook for redirect flow so we do not make an internal HTTP request.
- *
- * @param {{ id: string }} shortUrl
- * @param {{
- *   ip_address: string;
- *   country?: string | null;
- *   device?: "mobile" | "desktop" | "tablet" | "unknown" | null;
- * }} metadata
- */
-export async function recordRedirectClick(shortUrl, metadata) {
-  return clicksRepository.createClick({
-    short_url_id: shortUrl.id,
-    ip_address: metadata.ip_address,
-    country: metadata.country ?? null,
-      device: metadata.device ?? "unknown",
-  });
-}
-
-/**
- * @param {{
- *   body?: {
- *     country?: string;
- *     device?: "mobile" | "desktop" | "tablet" | "unknown";
- *   };
- *   headers?: Record<string, unknown>;
- *   ip?: string;
- *   socket?: { remoteAddress?: string | undefined };
- * }} reqLike
- */
 export function getClickMetadataFromRequest(reqLike) {
   const forwardedForHeader = reqLike.headers?.["x-forwarded-for"];
   const forwardedFor =
@@ -82,10 +32,6 @@ export function getClickMetadataFromRequest(reqLike) {
   };
 }
 
-/**
- * @param {Record<string, unknown> | undefined} headers
- * @returns {"mobile" | "desktop" | "tablet" | "unknown"}
- */
 function detectDeviceFromHeaders(headers) {
   const userAgent = headers?.["user-agent"];
   if (typeof userAgent !== "string") {

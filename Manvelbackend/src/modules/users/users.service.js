@@ -22,10 +22,6 @@ export async function registerUser(input) {
   }
 }
 
-/**
- * @param {string} userId
- * @returns {Promise<import("@prisma/client").ShortURL[]>}
- */
 export async function listUserUrls(userId) {
   const user = await usersRepository.findUserById(userId);
   if (!user) {

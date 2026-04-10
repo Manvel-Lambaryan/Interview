@@ -78,7 +78,7 @@
 | `src/types/domain/click.types.js` | `device`: `mobile \| desktop \| tablet \| unknown` |
 | `src/types/domain/analytics.types.js` | Daily/device aggregates, top URLs |
 | `src/types/http/http.types.js` | Pagination, query params types |
-| `src/types/express.js` | (Express) JSDoc typedefs կամ `// @ts-check` — `requestId` և այլն |
+| `src/types/express.js` | (Express) JSDoc typedefs կամ ts-check մեկնաբանություն — `requestId` և այլն |
 
 ---
 

@@ -6,13 +6,6 @@ import * as tagsRepository from "../tags/tags.repository.js";
 import { findUserById } from "../users/users.repository.js";
 import * as urlsRepository from "./urls.repository.js";
 
-/**
- * @param {{
- *   user_id: string;
- *   original_url: string;
- *   expires_at?: string | null;
- * }} input
- */
 export async function createShortUrl(input) {
   const user = await findUserById(input.user_id);
   if (!user) {
@@ -36,10 +29,6 @@ export async function createShortUrl(input) {
   );
 }
 
-/**
- * @param {string} shortCode
- * @returns {Promise<import("@prisma/client").ShortURL>}
- */
 export async function getRedirectTarget(shortCode) {
   const row = await urlsRepository.findByShortCode(shortCode);
   if (!row) {
@@ -57,9 +46,6 @@ export async function getRedirectTarget(shortCode) {
   return row;
 }
 
-/**
- * @param {string} shortCode
- */
 export async function deleteShortUrlByCode(shortCode) {
   const deleted = await urlsRepository.deleteByShortCode(shortCode);
   if (deleted === 0) {
@@ -67,14 +53,6 @@ export async function deleteShortUrlByCode(shortCode) {
   }
 }
 
-/**
- * Attaches a tag to a short URL. Duplicate (same tag on same URL) → 409.
- * Body: either `{ tag_name }` (find-or-create tag by name) or `{ tag_id }` (existing tag).
- *
- * @param {string} shortCode
- * @param {{ tag_name: string } | { tag_id: string }} body
- * @returns {Promise<import("@prisma/client").Tag>}
- */
 export async function attachTagToShortUrl(shortCode, body) {
   const shortUrl = await urlsRepository.findByShortCode(shortCode);
   if (!shortUrl) {
@@ -111,10 +89,6 @@ export async function attachTagToShortUrl(shortCode, body) {
   return tag;
 }
 
-/**
- * @param {string} shortCode
- * @returns {Promise<import("@prisma/client").Tag[]>}
- */
 export async function listTagsForShortUrl(shortCode) {
   const tags = await tagsRepository.findTagsByShortCode(shortCode);
   if (tags === null) {
@@ -123,10 +97,6 @@ export async function listTagsForShortUrl(shortCode) {
   return tags;
 }
 
-/**
- * @param {string} tagName
- * @returns {Promise<import("@prisma/client").ShortURL[]>}
- */
 export async function listShortUrlsByTagName(tagName) {
   return urlsRepository.findManyByTagName(tagName);
 }

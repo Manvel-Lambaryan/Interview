@@ -1,3 +1,4 @@
+import { recordClick } from "../../integrations/index.js";
 import * as clicksService from "../clicks/clicks.service.js";
 import * as urlsService from "./urls.service.js";
 import { toShortUrlResponse, toTagResponse } from "./urls.presenter.js";
@@ -14,10 +15,7 @@ export async function createShortUrlController(req, res, next) {
 export async function redirectByShortCodeController(req, res, next) {
   try {
     const row = await urlsService.getRedirectTarget(req.params.short_code);
-    await clicksService.recordRedirectClick(
-      row,
-      clicksService.getClickMetadataFromRequest(req),
-    );
+    await recordClick(row.id, clicksService.getClickMetadataFromRequest(req));
     res.redirect(302, row.original_url);
   } catch (e) {
     next(e);

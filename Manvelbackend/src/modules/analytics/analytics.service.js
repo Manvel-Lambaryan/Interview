@@ -5,10 +5,6 @@ import { buildDateRange } from "../clicks/clicks.analytics.js";
 import { getShortUrlByCodeOrThrow } from "../clicks/clicks.service.js";
 import * as analyticsRepository from "./analytics.repository.js";
 
-/**
- * @param {string} shortCode
- * @param {{ from?: string; to?: string }} query
- */
 export async function getShortUrlAnalytics(shortCode, query = {}) {
   const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
   return {
@@ -19,10 +15,6 @@ export async function getShortUrlAnalytics(shortCode, query = {}) {
   };
 }
 
-/**
- * @param {string} shortCode
- * @param {{ from?: string; to?: string }} query
- */
 export async function getShortUrlDailyAnalytics(shortCode, query = {}) {
   const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
   const rows = await analyticsRepository.countDailyClicksByShortUrlId(
@@ -36,10 +28,6 @@ export async function getShortUrlDailyAnalytics(shortCode, query = {}) {
   }));
 }
 
-/**
- * @param {string} shortCode
- * @param {{ from?: string; to?: string }} query
- */
 export async function getShortUrlDeviceAnalytics(shortCode, query = {}) {
   const shortUrl = await getShortUrlByCodeOrThrow(shortCode);
   const rows = await analyticsRepository.countClicksByDeviceByShortUrlId(
@@ -53,9 +41,6 @@ export async function getShortUrlDeviceAnalytics(shortCode, query = {}) {
   }));
 }
 
-/**
- * @param {string} userId
- */
 export async function getUserAnalytics(userId) {
   const user = await findUserById(userId);
   if (!user) {

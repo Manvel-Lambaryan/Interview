@@ -1,10 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { getPrisma } from "../../config/database.js";
 
-/**
- * @param {string} shortUrlId
- * @param {{ from?: Date; to?: Date }} range
- */
 export async function countClicksByShortUrlId(shortUrlId, range = {}) {
   const prisma = getPrisma();
   return prisma.click.count({
@@ -15,10 +11,6 @@ export async function countClicksByShortUrlId(shortUrlId, range = {}) {
   });
 }
 
-/**
- * @param {string} shortUrlId
- * @param {{ from?: Date; to?: Date }} range
- */
 export async function countDailyClicksByShortUrlId(shortUrlId, range = {}) {
   const prisma = getPrisma();
   const clickedAtFilter = buildClickedAtFilter(range);
@@ -47,10 +39,6 @@ export async function countDailyClicksByShortUrlId(shortUrlId, range = {}) {
   );
 }
 
-/**
- * @param {string} shortUrlId
- * @param {{ from?: Date; to?: Date }} range
- */
 export async function countClicksByDeviceByShortUrlId(shortUrlId, range = {}) {
   const prisma = getPrisma();
   return prisma.click.groupBy({
@@ -68,9 +56,6 @@ export async function countClicksByDeviceByShortUrlId(shortUrlId, range = {}) {
   });
 }
 
-/**
- * @param {string} userId
- */
 export async function countClicksByUserId(userId) {
   const prisma = getPrisma();
   return prisma.click.count({
@@ -99,9 +84,6 @@ export async function findTopShortUrls(limit = 5) {
   );
 }
 
-/**
- * @param {{ from?: Date; to?: Date }} range
- */
 function buildClickedAtFilter(range) {
   const clickedAt = {};
 

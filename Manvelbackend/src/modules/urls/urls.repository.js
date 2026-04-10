@@ -1,13 +1,5 @@
 import { getPrisma } from "../../config/database.js";
 
-/**
- * @param {{
- *   user_id: string;
- *   original_url: string;
- *   short_code: string;
- *   expires_at: Date | null;
- * }} data
- */
 export async function createShortUrl(data) {
   const prisma = getPrisma();
   return prisma.shortURL.create({
@@ -20,10 +12,6 @@ export async function createShortUrl(data) {
   });
 }
 
-/**
- * @param {string} shortCode
- * @returns {Promise<import("@prisma/client").ShortURL | null>}
- */
 export async function findByShortCode(shortCode) {
   const prisma = getPrisma();
   return prisma.shortURL.findUnique({
@@ -31,10 +19,6 @@ export async function findByShortCode(shortCode) {
   });
 }
 
-/**
- * @param {string} userId
- * @returns {Promise<import("@prisma/client").ShortURL[]>}
- */
 export async function findManyByUserId(userId) {
   const prisma = getPrisma();
   return prisma.shortURL.findMany({
@@ -43,11 +27,6 @@ export async function findManyByUserId(userId) {
   });
 }
 
-/**
- * All short URLs that have the given tag name (single query via relation / JOIN).
- * @param {string} tagName
- * @returns {Promise<import("@prisma/client").ShortURL[]>}
- */
 export async function findManyByTagName(tagName) {
   const prisma = getPrisma();
   return prisma.shortURL.findMany({
@@ -62,11 +41,6 @@ export async function findManyByTagName(tagName) {
   });
 }
 
-/**
- * Hard delete by short_code. Cascades short_url_tags per schema.
- * @param {string} shortCode
- * @returns {Promise<number>} number of rows deleted (0 or 1)
- */
 export async function deleteByShortCode(shortCode) {
   const prisma = getPrisma();
   const result = await prisma.shortURL.deleteMany({
